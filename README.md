@@ -1,33 +1,37 @@
 # OpenAPI Schema to JSON Schema
 
-A little NodeJS package to convert OpenAPI Schema Object to JSON Schema.
+A little NodeJS package to convert JSON Schema to [OpenAPI Schema Objects](https://swagger.io/specification/#schemaObject).
 
-Currently converts from [OpenAPI 3.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) to [JSON Schema Draft 4](http://json-schema.org/specification-links.html#draft-4).
+- **From:** [JSON Schema Draft v5](http://json-schema.org/specification-links.html#draft-5)
+- **To:** [OpenAPI 3.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md)
 
 ## Why?
 
-OpenAPI is a specification for describing RESTful APIs. OpenAPI 3.0 allows us to describe the structures of request and response payloads in a detailed manner. This would, theoretically, mean that we should be able to automatically validate request and response payloads. However, as of writing there aren't many validators around.
+OpenAPI is often described as an extension of JSON Schema, but both specs have changed over time and grown independently. OpenAPI v2 based based on JSON Schema draft 4 with a long list of deviations, but OpenAPI v3 shrank that list, upping their support to draft v4 and making the list of discrepancies shorter. Despite OpenAPI v3 closing the gap, the issue of JSON Schema divergence has not been resolved fully.
 
-The good news is that there are many validators for JSON Schema for different languages. The bad news is that OpenAPI 3.0 is not entirely compatible with JSON Schema. The Schema Object of OpenAPI 3.0 is an extended subset of JSON Schema Specification Wright Draft 00 with some differences.
+![Diagram showing data model (the objects, payload bodies, etc) and service model (endpoints, headers, metadata, etc)](https://cdn-images-1.medium.com/max/1600/0*hijIL-3Xa5EFZ783.png)
 
-The purpose of this project is to fill the grap by doing the conversion between these two formats.
+Carefully writing JSON Schema for your data model kiiiinda works, but it is possible to write JSON Schema that creates invalid OpenAPI, and vice versa. For more on this, read the article [_OpenAPI and JSON Schema Divergence_](https://blog.apisyouwonthate.com/openapi-and-json-schema-divergence-part-1-1daf6678d86e).
+
+This tool sets out to allow folks to convert from JSON Schema (their one source of truth for everything) to OpenAPI (a thing for HTML docs and making SDKs).
+
+## Converting Back
+
+To convert the other way, check out [openapi-schema-to-json-schema](https://github.com/mikunn/openapi-schema-to-json-schema), which this package was based on.
 
 ## Features
 
-* converts OpenAPI 3.0 Schema Object to JSON Schema Draft 4
-* converts [common named data types](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#data-types) to `type` and `format`
-  * for example `type: "dateTime"` becomes `type: "string"` with `format: "date-time"`
-* deletes `nullable` and adds `"null"` to `type` array if `nullable` is `true`
+* converts JSON Schema Draft 00 Wright (a.k.a draft v5) to OpenAPI 3.0 Schema Object
+* switches `type: ['foo', 'null']` to `type: foo` and `nullable: true`
 * supports deep structures with nested `allOf`s etc.
-* removes [OpenAPI specific properties](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#fixed-fields-20) such as `discriminator`, `deprecated` etc. unless specified otherwise
-* optionally supports `patternProperties` with `x-patternProperties` in the Schema Object
+* switches `patternProperties` to `x-patternProperties` in the Schema Object
 
 **NOTE**: `$ref`s are not dereferenced. Use a dereferencer such as [json-schema-ref-parser](https://www.npmjs.com/package/json-schema-ref-parser) prior to using this package.
 
 ## Installation
 
 ```
-npm install --save openapi-schema-to-json-schema
+npm install --save json-schema-to-openapi-schema
 ```
 
 ## Usage
@@ -35,15 +39,15 @@ npm install --save openapi-schema-to-json-schema
 Here's a small example to get the idea:
 
 ```js
+const toOpenApi = require('json-schema-to-openapi-schema');
 
-var toJsonSchema = require('openapi-schema-to-json-schema');
-
-var schema = {
-  type: 'dateTime',
-  nullable: true
+const schema = {
+  '$schema': 'http://json-schema.org/draft-04/schema#',
+  type: ['string', 'null'],
+  format: 'date-time',
 };
 
-var convertedSchema = toJsonSchema(schema);
+const convertedSchema = toOpenApi(schema);
 
 console.log(convertedSchema);
 ```
@@ -52,13 +56,11 @@ The example prints out
 
 ```js
 {
-  type: ['string', 'null'],
+  type: 'string',
   format: 'date-time',
-  '$schema': 'http://json-schema.org/draft-04/schema#'
+  nullable: true
 }
 ```
-
-Provide the function the schema object with possible options.
 
 ### Options
 
@@ -67,56 +69,3 @@ The function accepts `options` object as the second argument.
 #### `cloneSchema` (boolean)
 
 If set to `false`, converts the provided schema in place. If `true`, clones the schema by converting it to JSON and back. The overhead of the cloning is usually negligible. Defaults to `true`.
-
-#### `dateToDateTime` (boolean)
-
-This is `false` by default and leaves `date` type/format as is. If set to `true`, sets `type: "string"` and `format: "date-time"` if
-  * `type: "string"` AND `format: "date"` OR
-  * `type: "date"`
-  
-For example
-
-```js
-var schema = {
-  type: 'date'
-};
-
-var convertedSchema = toJsonSchema(schema, {dateToDateTime: true});
-
-console.log(convertedSchema);
-```
-
-prints 
-
-```js
-{
-  type: 'string',
-  format: 'date-time',
-  '$schema': 'http://json-schema.org/draft-04/schema#'
-}
-```
-
-#### `keepNotSupported` (array)
-
-By default, the following fields are removed from the result schema: `nullable`, `discriminator`, `readOnly`, `writeOnly`, `xml`, `externalDocs`, `example` and `deprecated` as they are not supported by JSON Schema Draft 4. Provide an array of the ones you want to keep (as strings) and they won't be removed. 
-
-#### `removeReadOnly` (boolean)
-
-If set to `true`, will remove properties set as `readOnly`. If the property is set as `required`, it will be removed from the `required` array as well. The property will be removed even if `readOnly` is set to be kept with `keepNotSupported`.
-
-#### `removeWriteOnly` (boolean)
-
-Similar to `removeReadOnly`, but for `writeOnly` properties.
-
-#### `supportPatternProperties` (boolean)
- 
-If set to `true` and `x-patternProperties` property is present, change `x-patternProperties` to `patternProperties` and call `patternPropertiesHandler`. If `patternPropertiesHandler` is not defined, call the default handler. See `patternPropertiesHandler` for more information.
-
-#### `patternPropertiesHandler` (function)
-
-Provide a function to handle pattern properties and set `supportPatternProperties` to take effect. The function takes the schema where `x-patternProperties` is defined on the root level. At this point `x-patternProperties` is changed to `patternProperties`. It must return the modified schema.
-
-If the handler is not provided, the default handler is used. If `additionalProperties` is set and is an object, the default handler sets it to false if the `additionaProperties` object has deep equality with a pattern object inside `patternProperties`. This is because we might want to define `additionalProperties` in OpenAPI spec file, but want to validate against a pattern. The pattern would turn out to be useless if `additionalProperties` of the same structure were allowed. Create you own handler to override this functionality.
-
-See `test/pattern_properties.js` for examples how this works.
-

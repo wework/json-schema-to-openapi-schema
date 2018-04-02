@@ -1,3 +1,5 @@
+// SWAPPED
+
 var test = require('tape')
 	, convert = require('../')
 ;
@@ -11,15 +13,15 @@ test('cloning schema by default', function(assert) {
 	assert.plan(2);
 
 	schema = {
-		type: 'string',
-		nullable: true,
+		$schema: 'http://json-schema.org/draft-04/schema#',
+		type: ['string', 'null'],
 	};
 
 	result = convert(schema);
 
 	expected = {
-		$schema: 'http://json-schema.org/draft-04/schema#',
-		type: ['string', 'null'],
+		type: 'string',
+		nullable: true,
 	};
 
 	assert.deepEqual(result, expected, 'converted');
@@ -35,15 +37,15 @@ test('cloning schema with cloneSchema option', function(assert) {
 	assert.plan(2);
 
 	schema = {
-		type: 'string',
-		nullable: true,
+		$schema: 'http://json-schema.org/draft-04/schema#',
+		type: ['string', 'null'],
 	};
 
 	result = convert(schema, {cloneSchema: true});
 
 	expected = {
-		$schema: 'http://json-schema.org/draft-04/schema#',
-		type: ['string', 'null'],
+		type: 'string',
+		nullable: true,
 	};
 
 	assert.deepEqual(result, expected, 'converted');
@@ -59,15 +61,15 @@ test('direct schema modification', function(assert) {
 	assert.plan(2);
 
 	schema = {
-		type: 'string',
-		nullable: true,
+		$schema: 'http://json-schema.org/draft-04/schema#',
+		type: ['string', 'null'],
 	};
 
 	result = convert(schema, {cloneSchema: false});
 
 	expected = {
-		$schema: 'http://json-schema.org/draft-04/schema#',
-		type: ['string', 'null'],
+		type: 'string',
+		nullable: true,
 	};
 
 	assert.deepEqual(result, expected, 'converted');

@@ -1,7 +1,8 @@
 {
+	"$schema": "http://json-schema.org/draft-04/schema#",
 	"allOf": [
     {
-      "anyOf": [
+			"anyOf": [
         {
           "type": "object",
           "properties": {
@@ -9,10 +10,7 @@
               "type": "array",
               "items": {
                 "type": "integer",
-                "format": "int64",
-                "example": [
-                  1
-                ]
+                "format": "int64"
               }
             }
           }
@@ -24,10 +22,7 @@
               "type": "array",
               "items": {
                 "type": "integer",
-                "format": "int64",
-                "example": [
-                  1
-                ]
+                "format": "int64"
               }
             }
           }
@@ -44,21 +39,23 @@
                     "properties": {
                       "email": {
                         "type": "string",
-                        "example": "cats@email.com"
+												"example": "cats@email.com"
                       },
                       "sms": {
-                        "type": "string",
-                        "nullable": true,
-                        "example": "+12345678"
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+												"example": "+12345678"
                       },
                       "properties": {
                         "type": "object",
                         "additionalProperties": {
                           "type": "string"
                         },
-                        "example": {
-                          "name": "Wookie"
-                        }
+												"example": {
+													"name": "Wookie"
+												}
                       }
                     }
                   },
@@ -86,7 +83,7 @@
           "properties": {
             "feeling": {
               "type": "string",
-              "example": "Good feeling"
+							"example": "Good feeling"
             },
             "child": {
               "type": "object",
@@ -97,11 +94,11 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "Steven"
+									"example": "Steven"
                 },
                 "age": {
                   "type": "integer",
-                  "example": 5
+									"example": 5
                 }
               }
             },

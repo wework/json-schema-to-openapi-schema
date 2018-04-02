@@ -1,41 +1,31 @@
-var fs = require('fs')
-	,	join = require('path').join
-	, test = require('tape')
-	, convert = require('../')
-;
+// SWAPPED
+const fs = require('fs');
+const join = require('path').join;
+const test = require('tape');
+const convert = require('../');
 
 test('complex schema', function(assert) {
-	var schema
-		, result
-		, expected
-	;
-
 	assert.plan(1);
 
-	schema = getSchema('schema-1.json');
-	result = convert(schema);
-	expected = getSchema('schema-1-expected.json'); 
+	const schema = getSchema('json-schema-expected.json');
+	const result = convert(schema);
+	const expected = getSchema('openapi-schema.json');
 
 	assert.deepEqual(result, expected, 'converted');
 });
 
 test('converting complex schema in place', function(assert) {
-	var schema
-		, result
-		, expected
-	;
-
 	assert.plan(2);
 
-	schema = getSchema('schema-1.json'); 
-	result = convert(schema, {cloneSchema: false});
-	expected = getSchema('schema-1-expected.json'); 
+	const schema = getSchema('json-schema-expected.json');
+	const result = convert(schema, { cloneSchema: false });
+	const expected = getSchema('openapi-schema.json');
 
-	assert.equal(schema, result, 'changed schema in place');
+	assert.deepEqual(schema, result, 'changed schema in place');
 	assert.deepEqual(result, expected, 'converted');
 });
 
 function getSchema(file) {
-	var path = join(__dirname, 'schemas', file);
-	return JSON.parse(fs.readFileSync(path)); 
+	const path = join(__dirname, 'schemas', file);
+	return JSON.parse(fs.readFileSync(path));
 }

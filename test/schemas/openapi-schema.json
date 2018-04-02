@@ -9,7 +9,10 @@
               "type": "array",
               "items": {
                 "type": "integer",
-                "format": "int64"
+                "format": "int64",
+                "example": [
+                  1
+                ]
               }
             }
           }
@@ -21,7 +24,10 @@
               "type": "array",
               "items": {
                 "type": "integer",
-                "format": "int64"
+                "format": "int64",
+                "example": [
+                  1
+                ]
               }
             }
           }
@@ -37,18 +43,21 @@
                     "type": "object",
                     "properties": {
                       "email": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "cats@email.com"
                       },
                       "sms": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
+                        "type": "string",
+                        "nullable": true,
+                        "example": "+12345678"
                       },
                       "properties": {
                         "type": "object",
                         "additionalProperties": {
                           "type": "string"
+                        },
+                        "example": {
+                          "name": "Wookie"
                         }
                       }
                     }
@@ -76,7 +85,8 @@
           ],
           "properties": {
             "feeling": {
-              "type": "string"
+              "type": "string",
+              "example": "Good feeling"
             },
             "child": {
               "type": "object",
@@ -86,10 +96,12 @@
               ],
               "properties": {
                 "name": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "Steven"
                 },
                 "age": {
-                  "type": "integer"
+                  "type": "integer",
+                  "example": 5
                 }
               }
             },
@@ -115,7 +127,5 @@
         }
       }
     }
-  ],
-  "$schema": "http://json-schema.org/draft-04/schema#"
+  ]
 }
-

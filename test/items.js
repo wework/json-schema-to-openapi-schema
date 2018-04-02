@@ -1,3 +1,4 @@
+// SWAPPED
 var test = require('tape')
 	, convert = require('../')
 ;
@@ -11,9 +12,11 @@ test('items', function(assert) {
 	assert.plan(1);
 
 	schema = {
+		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'array',
 		items: {
-			type: 'dateTime',
+			type: 'string',
+			format: 'date-time',
 			example: '2017-01-01T12:34:56Z'
 		}
 	};
@@ -21,11 +24,11 @@ test('items', function(assert) {
 	result = convert(schema);
 
 	expected = {
-		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'array',
 		items: {
 			type: 'string',
-			format: 'date-time'
+			format: 'date-time',
+			example: '2017-01-01T12:34:56Z'
 		}
 	};
 

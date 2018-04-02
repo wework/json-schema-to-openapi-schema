@@ -11,30 +11,29 @@ test('handles nullable', function(assert) {
 	assert.plan(2);
 
 	schema = {
-		type: 'string',
-		nullable: true
-	};
-
-	result = convert(schema);
-
-	expected = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: ['string', 'null'],
 	};
 
-	assert.deepEqual(result, expected, 'nullable converted');
+	result = convert(schema);
+
+	expected = {
+		type: 'string',
+		nullable: true
+	};
+
+	assert.deepEqual(result, expected, 'nullable added');
 
 	schema = {
-		type: 'string',
-		nullable: false,
+		$schema: 'http://json-schema.org/draft-04/schema#',
+		type: 'string'
 	};
 
 	result = convert(schema);
 
 	expected = {
-		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'string'
 	};
 
-	assert.deepEqual(result, expected, 'nullable removed, type untouched');
+	assert.deepEqual(result, expected, 'nullable added');
 });

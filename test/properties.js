@@ -1,6 +1,30 @@
+// SWAPPED
 var test = require('tape')
 	, convert = require('../')
 ;
+
+test('type array', function(assert) {
+	var schema
+		, result
+		, expected
+	;
+
+	assert.plan(1);
+
+	schema = {
+		$schema: 'http://json-schema.org/draft-04/schema#',
+		type: ['string', 'null']
+	};
+
+	result = convert(schema);
+
+	expected = {
+		type: 'string',
+		nullable: true
+	};
+
+	assert.deepEqual(result, expected, 'converted');
+});
 
 test('properties', function(assert) {
 	var schema
@@ -11,23 +35,6 @@ test('properties', function(assert) {
 	assert.plan(1);
 
 	schema = {
-		type: 'object',
-		required: ['bar'],
-		properties: {
-			foo: {
-				type: 'string',
-				example: '2017-01-01T12:34:56Z'
-			},
-			bar: {
-				type: 'string',
-				nullable: true
-			}
-		}
-	};
-
-	result = convert(schema);
-
-	expected = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
 		required: ['bar'],
@@ -37,6 +44,22 @@ test('properties', function(assert) {
 			},
 			bar: {
 				type: ['string', 'null']
+			}
+		}
+	};
+
+	result = convert(schema);
+
+	expected = {
+		type: 'object',
+		required: ['bar'],
+		properties: {
+			foo: {
+				type: 'string',
+			},
+			bar: {
+				type: 'string',
+				nullable: true
 			}
 		}
 	};
@@ -53,11 +76,11 @@ test('addionalProperties is false', function(assert) {
 	assert.plan(1);
 
 	schema = {
+		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
 		properties: {
 			foo: {
 				type: 'string',
-				example: '2017-01-01T12:34:56Z'
 			}
 		},
 		additionalProperties: false
@@ -66,7 +89,6 @@ test('addionalProperties is false', function(assert) {
 	result = convert(schema);
 
 	expected = {
-		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
 		properties: {
 			foo: {
@@ -88,11 +110,11 @@ test('addionalProperties is true', function(assert) {
 	assert.plan(1);
 
 	schema = {
+		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
 		properties: {
 			foo: {
 				type: 'string',
-				example: '2017-01-01T12:34:56Z'
 			}
 		},
 		additionalProperties: true
@@ -101,7 +123,6 @@ test('addionalProperties is true', function(assert) {
 	result = convert(schema);
 
 	expected = {
-		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
 		properties: {
 			foo: {
@@ -123,18 +144,19 @@ test('addionalProperties is an object', function(assert) {
 	assert.plan(1);
 
 	schema = {
+		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
 		properties: {
 			foo: {
 				type: 'string',
-				example: '2017-01-01T12:34:56Z'
 			}
 		},
 		additionalProperties: {
 			type: 'object',
 			properties: {
 				foo: {
-					type: 'dateTime'
+					type: 'string',
+					format: 'date-time'
 				}
 			}
 		}
@@ -143,11 +165,10 @@ test('addionalProperties is an object', function(assert) {
 	result = convert(schema);
 
 	expected = {
-		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
 		properties: {
 			foo: {
-				type: 'string',
+				type: 'string'
 			}
 		},
 		additionalProperties: {

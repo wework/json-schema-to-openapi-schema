@@ -1,13 +1,13 @@
 {
-  "name": "openapi-schema-to-json-schema",
-  "version": "1.2.0",
-  "description": "Converts OpenAPI Schema Object to JSON Schema",
+  "name": "json-schema-to-openapi-schema",
+  "version": "0.1.0",
+  "description": "Converts a JSON Schema to OpenAPI Schema Object",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/tape test/**/*.js | ./node_modules/.bin/tap-spec"
+    "test": "tape test/**/*.js | tap-spec"
   },
-  "repository": "github:mikunn/openapi-schema-to-json-schema",
-  "author": "Mika Kunnas",
+  "repository": "github:wework/json-schema-to-openapi-schema",
+  "author": "Phil Sturgeon",
   "license": "MIT",
   "dependencies": {
     "deep-equal": "^1.0.1"

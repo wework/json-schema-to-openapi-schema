@@ -1,69 +1,38 @@
-var deepEqual = require('deep-equal');
-
-module.exports = convert;
+const structs = ['allOf', 'anyOf', 'oneOf', 'not', 'items', 'additionalProperties'];
 
 function convert(schema, options) {
-	var notSupported = [
-		'nullable', 'discriminator', 'readOnly',
-		'writeOnly', 'xml', 'externalDocs',
-		'example', 'deprecated'
-	];
-
 	options = options || {};
-	options.dateToDateTime = options.dateToDateTime || false;
-	options.cloneSchema = options.cloneSchema == false ? false : true;
-	options.supportPatternProperties = options.supportPatternProperties || false;
-	options.keepNotSupported = options.keepNotSupported || [];
-
-	if (typeof options.patternPropertiesHandler !== 'function') {
-		options.patternPropertiesHandler = patternPropertiesHandler;
-	}
-
-	options._removeProps = [];
-
-	if (options.removeReadOnly === true) {
-		options._removeProps.push('readOnly');
-	}
-
-	if (options.removeWriteOnly === true) {
-		options._removeProps.push('writeOnly');
-	}
-
-	options._structs = ['allOf', 'anyOf', 'oneOf', 'not', 'items', 'additionalProperties'];
-	options._notSupported = resolveNotSupported(notSupported, options.keepNotSupported);
+	options.cloneSchema = ! (options.cloneSchema === false);
 
 	if (options.cloneSchema) {
 		schema = JSON.parse(JSON.stringify(schema));
 	}
 
-	schema = convertSchema(schema, options);
-	schema['$schema'] = 'http://json-schema.org/draft-04/schema#';
+	delete schema['$schema'];
+	schema = convertSchema(schema);
 
 	return schema;
 }
 
-function convertSchema(schema, options) {
-	var structs = options._structs
-		, notSupported = options._notSupported
-		, i = 0
-		, j = 0
-		, struct = null
-	;
+function convertSchema(schema) {
+	let i = 0;
+	let j = 0;
+	let struct = null;
 
 	for (i; i < structs.length; i++) {
 		struct = structs[i];
 
 		if (Array.isArray(schema[struct])) {
 			for (j; j < schema[struct].length; j++) {
-				schema[struct][j] = convertSchema(schema[struct][j], options);
+				schema[struct][j] = convertSchema(schema[struct][j]);
 			}
 		} else if (typeof schema[struct] === 'object') {
-			schema[struct] = convertSchema(schema[struct], options);
+			schema[struct] = convertSchema(schema[struct]);
 		}
 	}
 
 	if (typeof schema.properties === 'object') {
-		schema.properties = convertProperties(schema.properties, options);
+		schema.properties = convertProperties(schema.properties);
 
 		if (Array.isArray(schema.required)) {
 			schema.required = cleanRequired(schema.required, schema.properties);
@@ -78,159 +47,73 @@ function convertSchema(schema, options) {
 
 	}
 
-	schema = convertTypes(schema, options);
+	schema = convertTypes(schema);
 
-	if (typeof schema['x-patternProperties'] === 'object'
-			&& options.supportPatternProperties) {
-		schema = convertPatternProperties(schema, options.patternPropertiesHandler);
-	}
-
-	for (i=0; i < notSupported.length; i++) {
-		delete schema[notSupported[i]];
+	if (typeof schema['patternProperties'] === 'object') {
+		schema = convertPatternProperties(schema);
 	}
 
 	return schema;
 }
 
-function convertProperties(properties, options) {
+function convertProperties(properties) {
 	var key
 		, property
 		, props = {}
-		, removeProp
 	;
 
 	for (key in properties) {
-		removeProp = false;
 		property = properties[key];
-
-		options._removeProps.forEach(function(prop) {
-			if (property[prop] === true) {
-				removeProp = true;
-			}
-		});
-
-		if (removeProp) {
-			continue;
-		}
-
-		props[key] = convertSchema(property, options);
+		props[key] = convertSchema(property);
 	}
 
 	return props;
 }
 
-function convertTypes(schema, options) {
-	var newType
-		, newFormat
-		, toDateTime = options.dateToDateTime
-	;
+function convertTypes(schema) {
+	var newType;
 
 	if (schema.type === undefined) {
 		return schema;
 	}
 
-	if (schema.type == 'string' && schema.format == 'date' && toDateTime === true) {
-		schema.format = 'date-time';
-	}
+	// type needs to be a string, not an array
+	if (schema.type instanceof Array && schema.type.includes('null')) {
+		var numTypes = schema.type.length;
 
-	switch(schema.type) {
-		case 'integer':
-			newType = 'integer';
-			break;
-		case 'long':
-			newType = 'integer';
-			newFormat = 'int64';
-			break;
-		case 'float':
-			newType = 'number';
-			newFormat = 'float';
-			break;
-		case 'double':
-			newType = 'number';
-			newFormat = 'double';
-			break;
-		case 'byte':
-			newType = 'string';
-			newFormat = 'byte';
-			break;
-		case 'binary':
-			newType = 'string';
-			newFormat = 'binary';
-			break;
-		case 'date':
-			newType = 'string';
-			newFormat = 'date';
-			if (toDateTime === true) {
-				newFormat = 'date-time';
-			}
-			break;
-		case 'dateTime':
-			newType = 'string';
-			newFormat = 'date-time';
-			break;
-		case 'password':
-			newType = 'string';
-			newFormat = 'password';
-			break;
-		default:
-			newType = schema.type;
-	}
+		schema.nullable = true;
 
-	schema.type = newType;
-	schema.format = typeof newFormat === 'string' ? newFormat : schema.format;
+		// if it was just type: ['null'] for some reason
+		switch (numTypes) {
+			case 1:
+				// Didn't know what else to do
+				newType = 'string';
+				break;
 
-	if (! schema.format) {
-		delete schema.format;
-	}
+			case 2:
+				newType = schema.type.find(function(element) {
+					return element !== 'null';
+				});
+				break;
 
-	if (schema.nullable === true) {
-		schema.type = [schema.type, 'null'];
-	}
-	
-	return schema;
-}
-
-function convertPatternProperties(schema, handler) {
-	schema.patternProperties = schema['x-patternProperties'];
-	delete schema['x-patternProperties'];
-
-	return handler(schema);
-}
-
-function patternPropertiesHandler(schema) {
-	var pattern
-		, patternsObj = schema.patternProperties
-		, additProps = schema.additionalProperties
-	;
-
-	if (typeof additProps !== 'object') {
-		return schema;
-	}
-
-	for (pattern in patternsObj) {
-		if (deepEqual(patternsObj[pattern], additProps)) {
-			schema.additionalProperties = false;
-			break;
+			default:
+				throw 'type cannot be an array, and you have ' + numTypes + ' types';
 		}
+	}
+
+	if (newType) {
+		schema.type = newType;
 	}
 
 	return schema;
 }
 
-function resolveNotSupported(notSupported, toRetain) {
-	var i = 0
-		, index
-	;
-
-	for (i; i < toRetain.length; i++) {
-		index = notSupported.indexOf(toRetain[i]);
-
-		if (index >= 0) {
-			notSupported.splice(index, 1);
-		}
-	}
-
-	return notSupported;
+// "patternProperties did not make it into OpenAPI v3.0"
+// https://github.com/OAI/OpenAPI-Specification/issues/687
+function convertPatternProperties(schema) {
+	schema['x-patternProperties'] = schema['patternProperties'];
+	delete schema['patternProperties'];
+	return schema;
 }
 
 function cleanRequired(required, properties) {
@@ -247,3 +130,5 @@ function cleanRequired(required, properties) {
 
 	return required;
 }
+
+module.exports = convert;
