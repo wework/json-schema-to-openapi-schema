@@ -1,39 +1,31 @@
-var test = require('tape')
-	, convert = require('../')
-;
+'use strict';
 
-test('handles nullable', function(assert) {
-	var schema
-		, result
-		, expected
-	;
+const convert = require('../');
+const should = require('should');
 
-	assert.plan(2);
-
-	schema = {
+it('adds `nullable: true` for `type: [string, null]`', () => {
+	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: ['string', 'null'],
 	};
 
-	result = convert(schema);
+	const result = convert(schema);
 
-	expected = {
+	should(result).deepEqual({
 		type: 'string',
 		nullable: true
-	};
+	});
+});
 
-	assert.deepEqual(result, expected, 'nullable added');
-
-	schema = {
+it('does not add nullable for non null types', () => {
+	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'string'
 	};
 
-	result = convert(schema);
+	const result = convert(schema);
 
-	expected = {
+	should(result).deepEqual({
 		type: 'string'
-	};
-
-	assert.deepEqual(result, expected, 'nullable added');
+	});
 });

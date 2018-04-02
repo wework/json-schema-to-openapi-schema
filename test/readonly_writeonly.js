@@ -1,16 +1,10 @@
-var test = require('tape')
-	, convert = require('../')
-;
+'use strict';
 
-test('maintain readOnly and writeOnly props', function(assert) {
-	var schema
-		, result
-		, expected
-	;
+const convert = require('../');
+const should = require('should');
 
-	assert.plan(1);
-
-	schema = {
+it('maintain readOnly and writeOnly props', () => {
+	const schema = {
 		type: 'object',
 		properties: {
 			prop1: {
@@ -24,9 +18,9 @@ test('maintain readOnly and writeOnly props', function(assert) {
 		}
 	};
 
-	result = convert(schema);
+	const result = convert(schema);
 
-	expected = {
+	const expected = {
 		type: 'object',
 		properties: {
 			prop1: {
@@ -40,18 +34,11 @@ test('maintain readOnly and writeOnly props', function(assert) {
 		}
 	};
 
-	assert.deepEqual(result, expected);
+	should(result).deepEqual(expected);
 });
 
-test('deep schema', function(assert) {
-	var schema
-		, result
-		, expected
-	;
-
-	assert.plan(1);
-
-	schema = {
+it('deep schema', () => {
+	const schema = {
 		type: 'object',
 		required: ['prop1', 'prop2'],
 		properties: {
@@ -85,9 +72,9 @@ test('deep schema', function(assert) {
 		}
 	};
 
-	result = convert(schema);
+	const result = convert(schema);
 
-	expected = {
+	const expected = {
 		type: 'object',
 		required: ['prop1', 'prop2'],
 		properties: {
@@ -121,5 +108,5 @@ test('deep schema', function(assert) {
 		}
 	};
 
-	assert.deepEqual(result, expected);
+	should(result).deepEqual(expected);
 });

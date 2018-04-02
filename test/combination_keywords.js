@@ -1,9 +1,9 @@
-const test = require('tape');
+'use strict';
+
 const convert = require('../');
+const should = require('should');
 
-test('iterates allOfs and converts types', function(assert) {
-	assert.plan(1);
-
+it('iterates allOfs and converts types', () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		allOf: [
@@ -53,12 +53,10 @@ test('iterates allOfs and converts types', function(assert) {
 		]
 	};
 
-	assert.deepEqual(result, expected, 'iterated allOfs');
+	should(result).deepEqual(expected, 'iterated allOfs');
 });
 
-test('iterates anyOfs and converts types', function(assert) {
-	assert.plan(1);
-
+it('iterates anyOfs and converts types', () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		anyOf: [
@@ -118,12 +116,10 @@ test('iterates anyOfs and converts types', function(assert) {
 		]
 	};
 
-	assert.deepEqual(result, expected, 'anyOfs iterated');
+	should(result).deepEqual(expected, 'anyOfs iterated');
 });
 
-test('iterates oneOfs and converts types', function(assert) {
-	assert.plan(1);
-
+it('iterates oneOfs and converts types', () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		oneOf: [
@@ -181,18 +177,11 @@ test('iterates oneOfs and converts types', function(assert) {
 		]
 	};
 
-	assert.deepEqual(result, expected, 'oneOfs iterated');
+	should(result).deepEqual(expected, 'oneOfs iterated');
 });
 
-test('converts types in not', function(assert) {
-	var schema
-		, result
-		, expected
-	;
-
-	assert.plan(1);
-
-	schema = {
+it('converts types in not', () => {
+	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
 		properties: {
@@ -203,9 +192,9 @@ test('converts types in not', function(assert) {
 		}
 	};
 
-	result = convert(schema);
+	const result = convert(schema);
 
-	expected = {
+	const expected = {
 		type: 'object',
 		properties: {
 			not: {
@@ -216,19 +205,12 @@ test('converts types in not', function(assert) {
 		}
 	};
 
-	assert.deepEqual(result, expected, 'not handled');
+	should(result).deepEqual(expected, 'not handled');
 });
 
 
-test('nested combination keywords', function(assert) {
-	var schema
-		, result
-		, expected
-	;
-
-	assert.plan(1);
-
-	schema = {
+it('nested combination keywords', () => {
+	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		anyOf: [
 			{
@@ -268,9 +250,9 @@ test('nested combination keywords', function(assert) {
 		]
 	};
 
-	result = convert(schema);
+	const result = convert(schema);
 
-	expected = {
+	const expected = {
 		anyOf: [
 			{
 				allOf: [
@@ -311,5 +293,5 @@ test('nested combination keywords', function(assert) {
 		]
 	};
 
-	assert.deepEqual(result, expected, 'nested combination keywords');
+	should(result).deepEqual(expected, 'nested combination keywords');
 });

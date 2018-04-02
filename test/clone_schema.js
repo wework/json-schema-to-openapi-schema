@@ -1,77 +1,55 @@
-// SWAPPED
+'use strict';
 
-var test = require('tape')
-	, convert = require('../')
-;
+const convert = require('../');
+const should = require('should');
 
-test('cloning schema by default', function(assert) {
-	var schema
-		, result
-		, expected
-	;
-
-	assert.plan(2);
-
-	schema = {
+it('cloning schema by default', () => {
+	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: ['string', 'null'],
 	};
 
-	result = convert(schema);
+	const result = convert(schema);
 
-	expected = {
+	const expected = {
 		type: 'string',
 		nullable: true,
 	};
 
-	assert.deepEqual(result, expected, 'converted');
-	assert.notEqual(result, schema, 'schema cloned');
+	should(result).deepEqual(expected, 'result does not match the expected');
+	should(result).not.deepEqual(schema, 'the schema was modified in place');
 });
 
-test('cloning schema with cloneSchema option', function(assert) {
-	var schema
-		, result
-		, expected
-	;
-
-	assert.plan(2);
-
-	schema = {
+it('cloning schema with cloneSchema option', () => {
+	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: ['string', 'null'],
 	};
 
-	result = convert(schema, {cloneSchema: true});
+	const result = convert(schema, { cloneSchema: true });
 
-	expected = {
+	const expected = {
 		type: 'string',
 		nullable: true,
 	};
 
-	assert.deepEqual(result, expected, 'converted');
-	assert.notEqual(result, schema, 'schema cloned');
+	should(result).deepEqual(expected, 'result does not match the expected');
+	should(result).not.deepEqual(schema, 'the schema was modified in place');
 });
 
-test('direct schema modification', function(assert) {
-	var schema
-		, result
-		, expected
-	;
-
-	assert.plan(2);
-
-	schema = {
+it('direct schema modification', () => {
+	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: ['string', 'null'],
 	};
 
-	result = convert(schema, {cloneSchema: false});
+	const result = convert(schema, { cloneSchema: false });
 
-	expected = {
+	const expected = {
 		type: 'string',
 		nullable: true,
 	};
 
-	assert.deepEqual(result, expected, 'converted');
-	assert.equal(result, schema, 'schema not cloned');
+	should(result).deepEqual(expected, 'result does not match the expected');
+	should(result).deepEqual(schema, 'the schema was not modified in place');
 });

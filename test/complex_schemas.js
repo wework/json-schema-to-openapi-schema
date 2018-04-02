@@ -1,28 +1,25 @@
-// SWAPPED
+'use strict';
+
+const convert = require('../');
+const should = require('should');
 const fs = require('fs');
 const join = require('path').join;
-const test = require('tape');
-const convert = require('../');
 
-test('complex schema', function(assert) {
-	assert.plan(1);
-
+it('complex schema', () => {
 	const schema = getSchema('json-schema-expected.json');
 	const result = convert(schema);
 	const expected = getSchema('openapi-schema.json');
 
-	assert.deepEqual(result, expected, 'converted');
+	should(result).deepEqual(expected, 'converted');
 });
 
-test('converting complex schema in place', function(assert) {
-	assert.plan(2);
-
+it('converting complex schema in place', () => {
 	const schema = getSchema('json-schema-expected.json');
 	const result = convert(schema, { cloneSchema: false });
 	const expected = getSchema('openapi-schema.json');
 
-	assert.deepEqual(schema, result, 'changed schema in place');
-	assert.deepEqual(result, expected, 'converted');
+	should(schema).deepEqual(result, 'changed schema in place');
+	should(result).deepEqual(expected, 'converted');
 });
 
 function getSchema(file) {

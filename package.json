@@ -4,16 +4,16 @@
   "description": "Converts a JSON Schema to OpenAPI Schema Object",
   "main": "index.js",
   "scripts": {
-    "test": "tape test/**/*.js | tap-spec"
+    "test": "nyc --reporter=html --reporter=text mocha",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": "github:wework/json-schema-to-openapi-schema",
   "author": "Phil Sturgeon",
   "license": "MIT",
-  "dependencies": {
-    "deep-equal": "^1.0.1"
-  },
   "devDependencies": {
-    "tap-spec": "^4.1.1",
-    "tape": "^4.8.0"
+    "coveralls": "^3.0.0",
+    "mocha": "^5.0.0",
+    "nyc": "^11.6.0",
+    "should": "^13.2.0"
   }
 }

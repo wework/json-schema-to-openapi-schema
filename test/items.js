@@ -1,17 +1,10 @@
-// SWAPPED
-var test = require('tape')
-	, convert = require('../')
-;
+'use strict';
 
-test('items', function(assert) {
-	var schema
-		, result
-		, expected
-	;
+const convert = require('../');
+const should = require('should');
 
-	assert.plan(1);
-
-	schema = {
+it('items', () => {
+	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'array',
 		items: {
@@ -21,9 +14,9 @@ test('items', function(assert) {
 		}
 	};
 
-	result = convert(schema);
+	const result = convert(schema);
 
-	expected = {
+	const expected = {
 		type: 'array',
 		items: {
 			type: 'string',
@@ -32,5 +25,5 @@ test('items', function(assert) {
 		}
 	};
 
-	assert.deepEqual(result, expected, 'converted');
+	should(result).deepEqual(expected, 'converted');
 });

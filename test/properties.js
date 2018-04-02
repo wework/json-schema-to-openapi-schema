@@ -1,40 +1,26 @@
-// SWAPPED
-var test = require('tape')
-	, convert = require('../')
-;
+'use strict';
 
-test('type array', function(assert) {
-	var schema
-		, result
-		, expected
-	;
+const convert = require('../');
+const should = require('should');
 
-	assert.plan(1);
-
-	schema = {
+it('type array', () => {
+	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: ['string', 'null']
 	};
 
-	result = convert(schema);
+	const result = convert(schema);
 
-	expected = {
+	const expected = {
 		type: 'string',
 		nullable: true
 	};
 
-	assert.deepEqual(result, expected, 'converted');
+	should(result).deepEqual(expected);
 });
 
-test('properties', function(assert) {
-	var schema
-		, result
-		, expected
-	;
-
-	assert.plan(1);
-
-	schema = {
+it('properties', () => {
+	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
 		required: ['bar'],
@@ -48,9 +34,9 @@ test('properties', function(assert) {
 		}
 	};
 
-	result = convert(schema);
+	const result = convert(schema);
 
-	expected = {
+	const expected = {
 		type: 'object',
 		required: ['bar'],
 		properties: {
@@ -64,18 +50,11 @@ test('properties', function(assert) {
 		}
 	};
 
-	assert.deepEqual(result, expected, 'converted');
+	should(result).deepEqual(expected);
 });
 
-test('addionalProperties is false', function(assert) {
-	var schema
-		, result
-		, expected
-	;
-
-	assert.plan(1);
-
-	schema = {
+it('addionalProperties is false', () => {
+	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
 		properties: {
@@ -86,9 +65,9 @@ test('addionalProperties is false', function(assert) {
 		additionalProperties: false
 	};
 
-	result = convert(schema);
+	const result = convert(schema);
 
-	expected = {
+	const expected = {
 		type: 'object',
 		properties: {
 			foo: {
@@ -98,18 +77,11 @@ test('addionalProperties is false', function(assert) {
 		additionalProperties: false
 	};
 
-	assert.deepEqual(result, expected, 'properties converted');
+	should(result).deepEqual(expected, 'properties converted');
 });
 
-test('addionalProperties is true', function(assert) {
-	var schema
-		, result
-		, expected
-	;
-
-	assert.plan(1);
-
-	schema = {
+it('addionalProperties is true', () => {
+	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
 		properties: {
@@ -120,9 +92,9 @@ test('addionalProperties is true', function(assert) {
 		additionalProperties: true
 	};
 
-	result = convert(schema);
+	const result = convert(schema);
 
-	expected = {
+	const expected = {
 		type: 'object',
 		properties: {
 			foo: {
@@ -132,18 +104,11 @@ test('addionalProperties is true', function(assert) {
 		additionalProperties: true
 	};
 
-	assert.deepEqual(result, expected, 'properties converted');
+	should(result).deepEqual(expected);
 });
 
-test('addionalProperties is an object', function(assert) {
-	var schema
-		, result
-		, expected
-	;
-
-	assert.plan(1);
-
-	schema = {
+it('addionalProperties is an object', () => {
+	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
 		properties: {
@@ -162,9 +127,9 @@ test('addionalProperties is an object', function(assert) {
 		}
 	};
 
-	result = convert(schema);
+	const result = convert(schema);
 
-	expected = {
+	const expected = {
 		type: 'object',
 		properties: {
 			foo: {
@@ -182,5 +147,5 @@ test('addionalProperties is an object', function(assert) {
 		}
 	};
 
-	assert.deepEqual(result, expected, 'properties and additionalProperties converted');
+	should(result).deepEqual(expected, 'properties and additionalProperties converted');
 });

@@ -1,10 +1,9 @@
-var test = require('tape')
-	, convert = require('../')
-;
+'use strict';
 
-test('renames patternProperties to x-patternProperties', function(assert) {
-	assert.plan(1);
+const convert = require('../');
+const should = require('should');
 
+it('renames patternProperties to x-patternProperties', () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
@@ -32,5 +31,5 @@ test('renames patternProperties to x-patternProperties', function(assert) {
 		}
 	};
 
-	assert.deepEqual(result, expected);
+	should(result).deepEqual(expected);
 });
