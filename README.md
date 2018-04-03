@@ -1,4 +1,4 @@
-# OpenAPI Schema to JSON Schema
+# JSON Schema to OpenAPI Schema 
 
 A little NodeJS package to convert JSON Schema to [OpenAPI Schema Objects](https://swagger.io/specification/#schemaObject).
 
@@ -7,7 +7,7 @@ A little NodeJS package to convert JSON Schema to [OpenAPI Schema Objects](https
 
 ## Why?
 
-OpenAPI is often described as an extension of JSON Schema, but both specs have changed over time and grown independently. OpenAPI v2 based based on JSON Schema draft 4 with a long list of deviations, but OpenAPI v3 shrank that list, upping their support to draft v4 and making the list of discrepancies shorter. Despite OpenAPI v3 closing the gap, the issue of JSON Schema divergence has not been resolved fully.
+OpenAPI is often described as an extension of JSON Schema, but both specs have changed over time and grown independently. OpenAPI v2 was based based on JSON Schema draft 4 with a long list of deviations, but OpenAPI v3 shrank that list, upping their support to draft v5 and making the list of discrepancies shorter. Despite OpenAPI v3 closing the gap, the issue of JSON Schema divergence has not been resolved fully.
 
 ![Diagram showing data model (the objects, payload bodies, etc) and service model (endpoints, headers, metadata, etc)](https://cdn-images-1.medium.com/max/1600/0*hijIL-3Xa5EFZ783.png)
 
