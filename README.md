@@ -69,3 +69,22 @@ The function accepts `options` object as the second argument.
 #### `cloneSchema` (boolean)
 
 If set to `false`, converts the provided schema in place. If `true`, clones the schema by converting it to JSON and back. The overhead of the cloning is usually negligible. Defaults to `true`.
+
+
+## Tests
+
+To run the test-suite:
+
+```shell
+npm test
+```
+
+## Credits
+
+- [mikunn] for creating [openapi-schema-to-json-schema] which this is based on
+- [Phil Sturgeon] for flipping that conversion script about face
+- [All Contributors][link-contributors]
+
+[mikunn]: https://github.com/mikunn
+[Phil Sturgeon]: https://github.com/philsturgeon
+[openapi-schema-to-json-schema]: https://github.com/mikunn/openapi-schema-to-json-schema
