@@ -64,6 +64,15 @@ function convertSchema(schema) {
 	return schema;
 }
 
+function validateType(type) {
+	const validTypes = ['null', 'boolean', 'object', 'array', 'number', 'string', 'integer'];
+	const types = Array.isArray(type) ? type : [type];
+	types.forEach(type => {
+		if (validTypes.indexOf(type) < 0 && type !== undefined)
+			throw new InvalidTypeError('Type "' + type + '" is not a valid type');
+	});
+}
+
 function convertProperties(properties) {
 	var key
 		, property

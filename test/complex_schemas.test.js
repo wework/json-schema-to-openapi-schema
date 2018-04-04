@@ -2,8 +2,7 @@
 
 const convert = require('../');
 const should = require('should');
-const fs = require('fs');
-const join = require('path').join;
+const getSchema = require('./helpers').getSchema;
 
 it('complex schema', () => {
 	const schema = getSchema('json-schema-expected.json');
@@ -21,8 +20,3 @@ it('converting complex schema in place', () => {
 	should(schema).deepEqual(result, 'changed schema in place');
 	should(result).deepEqual(expected, 'converted');
 });
-
-function getSchema(file) {
-	const path = join(__dirname, 'schemas', file);
-	return JSON.parse(fs.readFileSync(path));
-}
