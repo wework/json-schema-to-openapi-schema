@@ -1,5 +1,12 @@
 const structs = ['allOf', 'anyOf', 'oneOf', 'not', 'items', 'additionalProperties'];
 
+function InvalidTypeError(message) {
+	this.name = 'InvalidTypeError';
+	this.message = message;
+}
+
+InvalidTypeError.prototype = new Error();
+
 function convert(schema, options) {
 	options = options || {};
 	options.cloneSchema = ! (options.cloneSchema === false);
@@ -47,6 +54,7 @@ function convertSchema(schema) {
 
 	}
 
+	validateType(schema.type);
 	schema = convertTypes(schema);
 
 	if (typeof schema['patternProperties'] === 'object') {
