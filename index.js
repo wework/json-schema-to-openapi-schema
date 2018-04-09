@@ -1,5 +1,12 @@
 const structs = ['allOf', 'anyOf', 'oneOf', 'not', 'items', 'additionalProperties'];
 
+function InvalidTypeError(message) {
+	this.name = 'InvalidTypeError';
+	this.message = message;
+}
+
+InvalidTypeError.prototype = new Error();
+
 function convert(schema, options) {
 	options = options || {};
 	options.cloneSchema = ! (options.cloneSchema === false);
@@ -8,9 +15,15 @@ function convert(schema, options) {
 		schema = JSON.parse(JSON.stringify(schema));
 	}
 
-	delete schema['$schema'];
+	schema = removeRootKeywords(schema);
 	schema = convertSchema(schema);
 
+	return schema;
+}
+
+function removeRootKeywords(schema) {
+	delete schema['$schema'];
+	delete schema['id'];
 	return schema;
 }
 
@@ -47,7 +60,10 @@ function convertSchema(schema) {
 
 	}
 
+	validateType(schema.type);
+
 	schema = convertTypes(schema);
+	schema = convertDependencies(schema);
 
 	if (typeof schema['patternProperties'] === 'object') {
 		schema = convertPatternProperties(schema);
@@ -56,11 +72,19 @@ function convertSchema(schema) {
 	return schema;
 }
 
+function validateType(type) {
+	const validTypes = ['null', 'boolean', 'object', 'array', 'number', 'string', 'integer'];
+	const types = Array.isArray(type) ? type : [type];
+	types.forEach(type => {
+		if (validTypes.indexOf(type) < 0 && type !== undefined)
+			throw new InvalidTypeError('Type "' + type + '" is not a valid type');
+	});
+}
+
 function convertProperties(properties) {
-	var key
-		, property
-		, props = {}
-	;
+	let key = {};
+	let property = {};
+	let props = {};
 
 	for (key in properties) {
 		property = properties[key];
@@ -68,6 +92,51 @@ function convertProperties(properties) {
 	}
 
 	return props;
+}
+
+function convertDependencies(schema) {
+	const deps = schema.dependencies;
+	if (typeof deps !== 'object') {
+		return schema;
+	}
+
+	// Turns the dependencies keyword into an allOf of oneOf's
+	// "dependencies": {
+	// 		"post-office-box": ["street-address"]
+	// },
+	//
+	// becomes
+	//
+	// "allOf": [
+	// 	{
+	// 		"oneOf": [
+	// 			{"not": {"required": ["post-office-box"]}},
+	// 			{"required": ["post-office-box", "street-address"]}
+	// 		]
+	// 	}
+	//
+
+	delete schema['dependencies'];
+	if (!Array.isArray(schema.allOf)) {
+		schema.allOf = [];
+	}
+
+	for (const key in deps) {
+		const foo = {
+			'oneOf': [
+				{
+					'not': {
+						'required': [key]
+					}
+				},
+				{
+					'required': [].concat(key, deps[key])
+				}
+			]
+		};
+		schema.allOf.push(foo);
+	}
+	return schema;
 }
 
 function convertTypes(schema) {
