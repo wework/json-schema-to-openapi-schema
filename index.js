@@ -15,9 +15,15 @@ function convert(schema, options) {
 		schema = JSON.parse(JSON.stringify(schema));
 	}
 
-	delete schema['$schema'];
+	schema = removeRootKeywords(schema);
 	schema = convertSchema(schema);
 
+	return schema;
+}
+
+function removeRootKeywords(schema) {
+	delete schema['$schema'];
+	delete schema['id'];
 	return schema;
 }
 
