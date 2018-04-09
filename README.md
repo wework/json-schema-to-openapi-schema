@@ -1,4 +1,4 @@
-# OpenAPI Schema to JSON Schema
+# JSON Schema to OpenAPI Schema 
 
 A little NodeJS package to convert JSON Schema to [OpenAPI Schema Objects](https://swagger.io/specification/#schemaObject).
 
