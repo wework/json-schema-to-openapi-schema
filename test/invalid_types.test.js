@@ -4,25 +4,18 @@ const convert = require('../');
 const should = require('should');
 const getSchema = require('./helpers').getSchema;
 
-it('invalid types', () => {
-	var schema, msg;
+it('dateTime is invalid type', () => {
+	const schema = { type: 'dateTime' };
+	should.throws(() => { convert(schema); }, /InvalidTypeError/);
+});
 
-	schema = {
-		type: 'dateTime'
-	};
 
-	msg = 'dateTime is invalid type';
-	should.throws(() => { convert(schema); }, /InvalidTypeError/, msg);
+it('foo is invalid type', () => {
+	const schema = { type: 'foo' };
+	should.throws(() => { convert(schema); }, /InvalidTypeError/);
+});
 
-	schema = {
-		type: 'foo'
-	};
-
-	msg = 'foo is invalid type';
-	should.throws(() => { convert(schema); }, /InvalidTypeError/, msg);
-
-	schema = getSchema('schema-2-invalid-type.json');
-
-	msg = 'invalid type inside complex schema';
-	should.throws(() => { convert(schema); }, /InvalidTypeError.*invalidtype/, msg);
+it('invalid type inside complex schema', () => {
+	const schema = getSchema('invalid/json-schema.json');
+	should.throws(() => { convert(schema); }, /InvalidTypeError.*invalidtype/);
 });
