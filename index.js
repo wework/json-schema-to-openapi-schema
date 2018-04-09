@@ -61,7 +61,9 @@ function convertSchema(schema) {
 	}
 
 	validateType(schema.type);
+
 	schema = convertTypes(schema);
+	schema = convertDependencies(schema);
 
 	if (typeof schema['patternProperties'] === 'object') {
 		schema = convertPatternProperties(schema);
@@ -80,10 +82,9 @@ function validateType(type) {
 }
 
 function convertProperties(properties) {
-	var key
-		, property
-		, props = {}
-	;
+	let key = {};
+	let property = {};
+	let props = {};
 
 	for (key in properties) {
 		property = properties[key];
@@ -91,6 +92,51 @@ function convertProperties(properties) {
 	}
 
 	return props;
+}
+
+function convertDependencies(schema) {
+	const deps = schema.dependencies;
+	if (typeof deps !== 'object') {
+		return schema;
+	}
+
+	// Turns the dependencies keyword into an allOf of oneOf's
+	// "dependencies": {
+	// 		"post-office-box": ["street-address"]
+	// },
+	//
+	// becomes
+	//
+	// "allOf": [
+	// 	{
+	// 		"oneOf": [
+	// 			{"not": {"required": ["post-office-box"]}},
+	// 			{"required": ["post-office-box", "street-address"]}
+	// 		]
+	// 	}
+	//
+
+	delete schema['dependencies'];
+	if (!Array.isArray(schema.allOf)) {
+		schema.allOf = [];
+	}
+
+	for (const key in deps) {
+		const foo = {
+			'oneOf': [
+				{
+					'not': {
+						'required': [key]
+					}
+				},
+				{
+					'required': [].concat(key, deps[key])
+				}
+			]
+		};
+		schema.allOf.push(foo);
+	}
+	return schema;
 }
 
 function convertTypes(schema) {

@@ -7,7 +7,8 @@ A little NodeJS package to convert JSON Schema to [OpenAPI Schema Objects](https
 * converts JSON Schema Draft 00 Wright (a.k.a draft v5) to OpenAPI 3.0 Schema Object
 * switches `type: ['foo', 'null']` to `type: foo` and `nullable: true`
 * supports deep structures with nested `allOf`s etc.
-* switches `patternProperties` to `x-patternProperties` in the Schema Object
+* switches `patternProperties` to `x-patternProperties`
+* converts `dependencies` to an allOf + oneOf OpenAPI-valid equivalent
 
 ## Installation
 
