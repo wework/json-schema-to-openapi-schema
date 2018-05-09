@@ -1,0 +1,52 @@
+version: 2
+shared: &shared
+    docker:
+        - image: circleci/node:latest
+    steps:
+        - checkout
+        - restore_cache:
+            key: dependency-cache-{{ checksum "package.json" }}
+        - run:
+            name: Update npm
+            command: 'sudo npm install -g npm@latest'
+        - run:
+            name: Install npm dependencies
+            command: npm install
+        - save_cache:
+            key: dependency-cache-{{ checksum "package.json" }}
+            paths:
+              - node_modules
+        - run:
+            name: Tests
+            command: npm test
+        # - run:
+        #    name: Report Coverage
+        #    command: npm run coverage
+
+jobs:
+    node-latest:
+        <<: *shared
+
+    node-10:
+        docker:
+            - image: circleci/node:10
+        <<: *shared
+
+    node-9:
+        docker:
+            - image: circleci/node:9
+        <<: *shared
+
+    node-8:
+        docker:
+            - image: circleci/node:8
+        <<: *shared
+
+workflows:
+    version: 2
+    commit:
+        jobs:
+            - node-latest
+            - node-10
+            - node-9
+            - node-8
