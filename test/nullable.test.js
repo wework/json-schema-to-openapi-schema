@@ -21,7 +21,7 @@ it('adds `nullable: true` for `type: [string, null]`', () => {
 it('supports nullables inside sub-schemas', () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
-		$oneOf: [
+		oneOf: [
 			{ type: 'string' },
 			{ type: 'null' }
 		]
@@ -30,10 +30,10 @@ it('supports nullables inside sub-schemas', () => {
 	const result = convert(schema);
 
 	should(result).deepEqual({
-		$oneOf: [
+		oneOf: [
 			{ type: 'string' },
 			{ nullable: true }
-		]	
+		]
 	});
 });
 
