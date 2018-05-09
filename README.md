@@ -1,4 +1,4 @@
-# JSON Schema to OpenAPI Schema 
+# JSON Schema to OpenAPI Schema
 
 A little NodeJS package to convert JSON Schema to [OpenAPI Schema Objects](https://swagger.io/specification/#schemaObject).
 
@@ -72,11 +72,11 @@ _† Draft v5 is also known as Draft Wright 00, as the drafts are often named af
 
 ## TODO
 
-- [ ] Support later JSON Schema drafts through a yet-to-be-released json-schema-migrator package
+- [ ] Support later JSON Schema drafts via [cloudflare/json-schema-transformer] when it adds that functionality
 
 ## Converting Back
 
-To convert the other way, check out [openapi-schema-to-json-schema](https://github.com/mikunn/openapi-schema-to-json-schema), which this package was based on.
+To convert the other way, check out [openapi-schema-to-json-schema], which this package was based on.
 
 **NOTE**: `$ref`s are not dereferenced. Use a dereferencer such as [json-schema-ref-parser](https://www.npmjs.com/package/json-schema-ref-parser) prior to using this package.
 
@@ -98,3 +98,5 @@ npm test
 [mikunn]: https://github.com/mikunn
 [Phil Sturgeon]: https://github.com/philsturgeon
 [openapi-schema-to-json-schema]: https://github.com/mikunn/openapi-schema-to-json-schema
+[link-contributors]: https://github.com/wework/json-schema-to-openapi-schema/graphs/contributors
+[cloudflare/json-schema-transformer]: https://github.com/cloudflare/json-schema-tools/blob/master/workspaces/json-schema-transform/README.md

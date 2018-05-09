@@ -1,4 +1,4 @@
-const structs = ['allOf', 'anyOf', 'oneOf', 'not', 'items', 'additionalProperties'];
+const schemaWalker = require('@cloudflare/json-schema-walker');
 
 function InvalidTypeError(message) {
 	this.name = 'InvalidTypeError';
@@ -7,61 +7,27 @@ function InvalidTypeError(message) {
 
 InvalidTypeError.prototype = new Error();
 
-function convert(schema, options) {
-	options = options || {};
-	options.cloneSchema = ! (options.cloneSchema === false);
+function convert(schema, options = {}) {
+	const { cloneSchema = true } = options;
 
-	if (options.cloneSchema) {
+	if (cloneSchema) {
 		schema = JSON.parse(JSON.stringify(schema));
 	}
 
-	schema = removeRootKeywords(schema);
-	schema = convertSchema(schema);
-
+	const vocab = schemaWalker.getVocabulary(schema, schemaWalker.vocabularies.DRAFT_04);
+	schemaWalker.schemaWalk(schema, convertSchema, null, vocab);
 	return schema;
 }
 
-function removeRootKeywords(schema) {
+function stripIllegalKeywords(schema) {
 	delete schema['$schema'];
+	delete schema['$id'];
 	delete schema['id'];
 	return schema;
 }
 
-function convertSchema(schema) {
-	let i = 0;
-	let j = 0;
-	let struct = null;
-
-	for (i; i < structs.length; i++) {
-		struct = structs[i];
-
-		if (Array.isArray(schema[struct])) {
-			for (j; j < schema[struct].length; j++) {
-				schema[struct][j] = convertSchema(schema[struct][j]);
-			}
-		} else if (typeof schema[struct] === 'object') {
-			schema[struct] = convertSchema(schema[struct]);
-		}
-	}
-
-	if (typeof schema.properties === 'object') {
-		schema.properties = convertProperties(schema.properties);
-
-		if (Array.isArray(schema.required)) {
-			schema.required = cleanRequired(schema.required, schema.properties);
-
-			if (schema.required.length === 0) {
-				delete schema.required;
-			}
-		}
-		if (Object.keys(schema.properties).length === 0) {
-			delete schema.properties;
-		}
-
-	}
-
-	validateType(schema.type);
-
+function convertSchema(schema, path, parent, parentPath) {
+	schema = stripIllegalKeywords(schema);
 	schema = convertTypes(schema);
 	schema = convertDependencies(schema);
 
@@ -79,19 +45,6 @@ function validateType(type) {
 		if (validTypes.indexOf(type) < 0 && type !== undefined)
 			throw new InvalidTypeError('Type "' + type + '" is not a valid type');
 	});
-}
-
-function convertProperties(properties) {
-	let key = {};
-	let property = {};
-	let props = {};
-
-	for (key in properties) {
-		property = properties[key];
-		props[key] = convertSchema(property);
-	}
-
-	return props;
 }
 
 function convertDependencies(schema) {
@@ -140,38 +93,40 @@ function convertDependencies(schema) {
 }
 
 function convertTypes(schema) {
-	var newType;
-
 	if (schema.type === undefined) {
 		return schema;
 	}
 
-	// type needs to be a string, not an array
-	if (schema.type instanceof Array && schema.type.includes('null')) {
-		var numTypes = schema.type.length;
+	validateType(schema.type);
 
-		schema.nullable = true;
+	if (Array.isArray(schema.type)) {
 
-		// if it was just type: ['null'] for some reason
-		switch (numTypes) {
-			case 1:
-				// Didn't know what else to do
-				newType = 'string';
+		if (schema.type.length > 2 || !schema.type.includes('null')) {
+			throw new Error('Type of ' + schema.type.join(',') + ' is too confusing for OpenAPI to understand. Found in ' + JSON.stringify(schema));
+		}
+
+		switch (schema.type.length) {
+			case 0:
+				delete schema.type;
 				break;
 
-			case 2:
-				newType = schema.type.find(function(element) {
-					return element !== 'null';
-				});
+			case 1:
+				if (schema.type === 'null') {
+					schema.nullable = true;
+				}
+				else {
+					schema.type = schema.type[0];
+				}
 				break;
 
 			default:
-				throw 'type cannot be an array, and you have ' + numTypes + ' types';
+				schema.type = schema.type.find(type => type !== 'null');
+				schema.nullable = true;
 		}
 	}
-
-	if (newType) {
-		schema.type = newType;
+	else if (schema.type === 'null') {
+		delete schema.type;
+		schema.nullable = true;
 	}
 
 	return schema;
@@ -183,21 +138,6 @@ function convertPatternProperties(schema) {
 	schema['x-patternProperties'] = schema['patternProperties'];
 	delete schema['patternProperties'];
 	return schema;
-}
-
-function cleanRequired(required, properties) {
-	var i = 0;
-
-	required = required || [];
-	properties = properties || {};
-
-	for (i; i < required.length; i++) {
-		if (properties[required[i]] === undefined) {
-			required.splice(i, 1);
-		}
-	}
-
-	return required;
 }
 
 module.exports = convert;
