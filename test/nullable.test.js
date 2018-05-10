@@ -17,7 +17,6 @@ it('adds `nullable: true` for `type: [string, null]`', () => {
 	});
 });
 
-
 it('supports nullables inside sub-schemas', () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
@@ -34,6 +33,36 @@ it('supports nullables inside sub-schemas', () => {
 			{ type: 'string' },
 			{ nullable: true }
 		]
+	});
+});
+
+it('supports nullables inside reffed definitions', () => {
+	const schema = {
+		$schema: 'http://json-schema.org/draft-04/schema#',
+		type: 'object',
+		properties: {
+			issue: { $ref: '#/definitions/issue' }
+		},
+		definitions: {
+			issue: {
+				type: ['string', 'null']
+			}
+		}
+	};
+
+	const result = convert(schema);
+
+	should(result).deepEqual({
+		type: 'object',
+		properties: {
+			issue: { $ref: '#/definitions/issue' }
+		},
+		definitions: {
+			issue: {
+				type: 'string',
+				nullable: true
+			}
+		}
 	});
 });
 
