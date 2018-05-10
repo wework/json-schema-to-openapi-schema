@@ -44,6 +44,8 @@ The example prints out
 }
 ```
 
+**NOTE**: `$ref`s are not dereferenced. Use a dereferencer such as [json-schema-ref-parser](https://www.npmjs.com/package/json-schema-ref-parser) prior to using this package.
+
 ### Options
 
 The function accepts `options` object as the second argument.
@@ -77,9 +79,6 @@ _† Draft v5 is also known as Draft Wright 00, as the drafts are often named af
 ## Converting Back
 
 To convert the other way, check out [openapi-schema-to-json-schema], which this package was based on.
-
-**NOTE**: `$ref`s are not dereferenced. Use a dereferencer such as [json-schema-ref-parser](https://www.npmjs.com/package/json-schema-ref-parser) prior to using this package.
-
 
 ## Tests
 
