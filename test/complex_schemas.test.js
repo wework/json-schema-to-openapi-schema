@@ -4,7 +4,7 @@ const convert = require('../');
 const should = require('should');
 const getSchema = require('./helpers').getSchema;
 
-['basic', 'address', 'calendar'].forEach(test => {
+['basic', 'address', 'calendar', 'single-type-arrays'].forEach(test => {
 	it(`converts ${test}/openapi.json`, () => {
 		const schema = getSchema(test + '/json-schema.json');
 		const result = convert(schema);

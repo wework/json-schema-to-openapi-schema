@@ -101,7 +101,7 @@ function convertTypes(schema) {
 
 	if (Array.isArray(schema.type)) {
 
-		if (schema.type.length > 2 || !schema.type.includes('null')) {
+		if (schema.type.length > 2 || (schema.type.length > 1 && !schema.type.includes('null'))) {
 			throw new Error('Type of ' + schema.type.join(',') + ' is too confusing for OpenAPI to understand. Found in ' + JSON.stringify(schema));
 		}
 
