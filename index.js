@@ -35,6 +35,10 @@ function convertSchema(schema, path, parent, parentPath) {
 		schema = convertPatternProperties(schema);
 	}
 
+	if (schema.type === 'array' && typeof schema.items === 'undefined') {
+		schema.items = {};
+	}
+
 	return schema;
 }
 
