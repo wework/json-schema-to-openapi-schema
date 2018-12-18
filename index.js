@@ -31,9 +31,14 @@ function convertSchema(schema, path, parent, parentPath) {
 	schema = convertTypes(schema);
 	schema = convertDependencies(schema);
 	schema = rewriteIfThenElse(schema);
+	schema = rewriteExclusiveMinMax(schema);
 
 	if (typeof schema['patternProperties'] === 'object') {
 		schema = convertPatternProperties(schema);
+	}
+
+	if (schema.type === 'array' && typeof schema.items === 'undefined') {
+		schema.items = {};
 	}
 
 	return schema;
@@ -159,6 +164,18 @@ oneOf: [allOf: [X, Y], allOf: [not: X, Z]]
 		delete schema.if;
 		delete schema.then;
 		delete schema.else;
+  }
+	return schema;
+}
+
+function rewriteExclusiveMinMax(schema) {
+	if (typeof schema.exclusiveMaximum === 'number') {
+		schema.maximum = schema.exclusiveMaximum;
+		schema.exclusiveMaximum = true;
+	}
+	if (typeof schema.exclusiveMinimum === 'number') {
+		schema.minimum = schema.exclusiveMinimum;
+		schema.exclusiveMinimum = true;
 	}
 	return schema;
 }
