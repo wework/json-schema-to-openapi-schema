@@ -30,6 +30,7 @@ function convertSchema(schema, path, parent, parentPath) {
 	schema = stripIllegalKeywords(schema);
 	schema = convertTypes(schema);
 	schema = convertDependencies(schema);
+	schema = rewriteIfThenElse(schema);
 	schema = rewriteExclusiveMinMax(schema);
 
 	if (typeof schema['patternProperties'] === 'object') {
@@ -145,6 +146,28 @@ function convertPatternProperties(schema) {
 	return schema;
 }
 
+function rewriteIfThenElse(schema) {
+/* @handrews https://github.com/OAI/OpenAPI-Specification/pull/1766#issuecomment-442652805
+if and the *Of keywords
+
+There is a really easy solution for implementations, which is that
+
+if: X, then: Y, else: Z
+
+is equivalent to
+
+oneOf: [allOf: [X, Y], allOf: [not: X, Z]]
+*/
+	if (schema.if && schema.then) {
+		schema.oneOf = [ { allOf: [ schema.if, schema.then ] },
+				 { allOf: [ { not: schema.if }, schema.else ] } ];
+		delete schema.if;
+		delete schema.then;
+		delete schema.else;
+  }
+	return schema;
+}
+
 function rewriteExclusiveMinMax(schema) {
 	if (typeof schema.exclusiveMaximum === 'number') {
 		schema.maximum = schema.exclusiveMaximum;
@@ -158,3 +181,4 @@ function rewriteExclusiveMinMax(schema) {
 }
 
 module.exports = convert;
+
