@@ -29,6 +29,7 @@ function stripIllegalKeywords(schema) {
 function convertSchema(schema, path, parent, parentPath) {
 	schema = stripIllegalKeywords(schema);
 	schema = convertTypes(schema);
+	schema = rewriteConst(schema);
 	schema = convertDependencies(schema);
 	schema = rewriteIfThenElse(schema);
 	schema = rewriteExclusiveMinMax(schema);
@@ -143,6 +144,15 @@ function convertTypes(schema) {
 function convertPatternProperties(schema) {
 	schema['x-patternProperties'] = schema['patternProperties'];
 	delete schema['patternProperties'];
+	if (typeof schema.additionalProperties === 'undefined') schema.additionalProperties = true;
+	return schema;
+}
+
+function rewriteConst(schema) {
+	if (schema.const) {
+		schema.enum = [ schema.const ];
+		delete schema.const;
+	}
 	return schema;
 }
 
