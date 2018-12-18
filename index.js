@@ -30,6 +30,7 @@ function convertSchema(schema, path, parent, parentPath) {
 	schema = stripIllegalKeywords(schema);
 	schema = convertTypes(schema);
 	schema = convertDependencies(schema);
+	schema = rewriteExclusiveMinMax(schema);
 
 	if (typeof schema['patternProperties'] === 'object') {
 		schema = convertPatternProperties(schema);
@@ -141,6 +142,18 @@ function convertTypes(schema) {
 function convertPatternProperties(schema) {
 	schema['x-patternProperties'] = schema['patternProperties'];
 	delete schema['patternProperties'];
+	return schema;
+}
+
+function rewriteExclusiveMinMax(schema) {
+	if (typeof schema.exclusiveMaximum === 'number') {
+		schema.maximum = schema.exclusiveMaximum;
+		schema.exclusiveMaximum = true;
+	}
+	if (typeof schema.exclusiveMinimum === 'number') {
+		schema.minimum = schema.exclusiveMinimum;
+		schema.exclusiveMinimum = true;
+	}
 	return schema;
 }
 
