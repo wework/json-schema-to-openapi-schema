@@ -32,7 +32,8 @@ function convertSchema(schema, path, parent, parentPath) {
 	schema = rewriteConst(schema);
 	schema = convertDependencies(schema);
 	schema = rewriteIfThenElse(schema);
-	schema = rewriteExclusiveMinMax(schema);
+  schema = rewriteExclusiveMinMax(schema);
+  schema = convertExamples(schema);
 
 	if (typeof schema['patternProperties'] === 'object') {
 		schema = convertPatternProperties(schema);
@@ -148,6 +149,15 @@ function convertPatternProperties(schema) {
 	return schema;
 }
 
+function convertExamples(schema) {
+  if (schema['examples']) {
+    schema['example'] = schema['examples'][0];
+    delete schema['examples'];
+  }
+
+  return schema;
+}
+
 function rewriteConst(schema) {
 	if (schema.const) {
 		schema.enum = [ schema.const ];
@@ -191,4 +201,3 @@ function rewriteExclusiveMinMax(schema) {
 }
 
 module.exports = convert;
-
