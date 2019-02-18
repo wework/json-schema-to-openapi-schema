@@ -150,7 +150,7 @@ function convertPatternProperties(schema) {
 }
 
 function convertExamples(schema) {
-  if (schema['examples']) {
+  if (schema['examples'] && Array.isArray(schema['examples'])) {
     schema['example'] = schema['examples'][0];
     delete schema['examples'];
   }
