@@ -32,8 +32,8 @@ function convertSchema(schema, path, parent, parentPath) {
 	schema = rewriteConst(schema);
 	schema = convertDependencies(schema);
 	schema = rewriteIfThenElse(schema);
-  schema = rewriteExclusiveMinMax(schema);
-  schema = convertExamples(schema);
+        schema = rewriteExclusiveMinMax(schema);
+        schema = convertExamples(schema);
 
 	if (typeof schema['patternProperties'] === 'object') {
 		schema = convertPatternProperties(schema);
