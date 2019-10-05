@@ -1,8 +1,8 @@
 on: push
-name: Build and Publish
+name: Push
 jobs:
-  shellLint:
-    name: Shell Lint
+  build:
+    name: Build and Release
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
