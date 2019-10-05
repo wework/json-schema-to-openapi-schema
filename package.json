@@ -1,14 +1,14 @@
 {
   "name": "json-schema-to-openapi-schema",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Converts a JSON Schema to OpenAPI Schema Object",
   "main": "index.js",
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
-  "repository": "github:wework/json-schema-to-openapi-schema",
-  "author": "Phil Sturgeon <phil.sturgeon@wework.com>",
+  "repository": "github:openapi-js/json-schema-to-openapi-schema",
+  "author": "Phil Sturgeon <me@philsturgeon.uk>",
   "license": "MIT",
   "devDependencies": {
     "coveralls": "^3.0.0",
