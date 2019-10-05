@@ -97,5 +97,5 @@ npm test
 [mikunn]: https://github.com/mikunn
 [Phil Sturgeon]: https://github.com/philsturgeon
 [openapi-schema-to-json-schema]: https://github.com/mikunn/openapi-schema-to-json-schema
-[link-contributors]: https://github.com/wework/json-schema-to-openapi-schema/graphs/contributors
+[link-contributors]: https://github.com/openapi-js/json-schema-to-openapi-schema/graphs/contributors
 [cloudflare/json-schema-transformer]: https://github.com/cloudflare/json-schema-tools/blob/master/workspaces/json-schema-transform/README.md
