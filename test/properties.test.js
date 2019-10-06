@@ -3,13 +3,13 @@
 const convert = require('../');
 const should = require('should');
 
-it('type array', () => {
+it('type array', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: ['string', 'null']
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		type: 'string',
@@ -19,7 +19,7 @@ it('type array', () => {
 	should(result).deepEqual(expected);
 });
 
-it('properties', () => {
+it('properties', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
@@ -34,7 +34,7 @@ it('properties', () => {
 		}
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		type: 'object',
@@ -53,7 +53,7 @@ it('properties', () => {
 	should(result).deepEqual(expected);
 });
 
-it('addionalProperties is false', () => {
+it('addionalProperties is false', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
@@ -65,7 +65,7 @@ it('addionalProperties is false', () => {
 		additionalProperties: false
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		type: 'object',
@@ -80,7 +80,7 @@ it('addionalProperties is false', () => {
 	should(result).deepEqual(expected, 'properties converted');
 });
 
-it('addionalProperties is true', () => {
+it('addionalProperties is true', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
@@ -92,7 +92,7 @@ it('addionalProperties is true', () => {
 		additionalProperties: true
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		type: 'object',
@@ -107,7 +107,7 @@ it('addionalProperties is true', () => {
 	should(result).deepEqual(expected);
 });
 
-it('addionalProperties is an object', () => {
+it('addionalProperties is an object', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
@@ -127,7 +127,7 @@ it('addionalProperties is an object', () => {
 		}
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		type: 'object',

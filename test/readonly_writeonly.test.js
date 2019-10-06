@@ -3,7 +3,7 @@
 const convert = require('../');
 const should = require('should');
 
-it('maintain readOnly and writeOnly props', () => {
+it('maintain readOnly and writeOnly props', async () => {
 	const schema = {
 		type: 'object',
 		properties: {
@@ -18,7 +18,7 @@ it('maintain readOnly and writeOnly props', () => {
 		}
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		type: 'object',
@@ -37,7 +37,7 @@ it('maintain readOnly and writeOnly props', () => {
 	should(result).deepEqual(expected);
 });
 
-it('deep schema', () => {
+it('deep schema', async () => {
 	const schema = {
 		type: 'object',
 		required: ['prop1', 'prop2'],
@@ -72,7 +72,7 @@ it('deep schema', () => {
 		}
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		type: 'object',

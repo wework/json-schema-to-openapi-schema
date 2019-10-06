@@ -3,7 +3,7 @@
 const convert = require('../');
 const should = require('should');
 
-it('uses the first example from a schema', () => {
+it('uses the first example from a schema', async () => {
   const schema = {
     $schema: 'http://json-schema.org/draft-06/schema#',
     examples: [
@@ -12,7 +12,7 @@ it('uses the first example from a schema', () => {
     ]
   };
 
-  const result = convert(schema);
+  const result = await convert(schema);
 
   should(result).deepEqual({
     example: 'foo',

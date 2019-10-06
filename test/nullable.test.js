@@ -3,13 +3,13 @@
 const convert = require('../');
 const should = require('should');
 
-it('adds `nullable: true` for `type: [string, null]`', () => {
+it('adds `nullable: true` for `type: [string, null]`', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: ['string', 'null'],
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	should(result).deepEqual({
 		type: 'string',
@@ -18,7 +18,7 @@ it('adds `nullable: true` for `type: [string, null]`', () => {
 });
 
 
-it('supports nullables inside sub-schemas', () => {
+it('supports nullables inside sub-schemas', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		oneOf: [
@@ -27,7 +27,7 @@ it('supports nullables inside sub-schemas', () => {
 		]
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	should(result).deepEqual({
 		oneOf: [
@@ -37,13 +37,13 @@ it('supports nullables inside sub-schemas', () => {
 	});
 });
 
-it('does not add nullable for non null types', () => {
+it('does not add nullable for non null types', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'string'
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	should(result).deepEqual({
 		type: 'string'

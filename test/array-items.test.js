@@ -3,13 +3,13 @@
 const convert = require('../');
 const should = require('should');
 
-it('array-items', () => {
+it('array-items', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'array',
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		type: 'array',

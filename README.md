@@ -29,9 +29,11 @@ const schema = {
   format: 'date-time',
 };
 
-const convertedSchema = toOpenApi(schema);
+(async () => {
+  const convertedSchema = await toOpenApi(schema);
+  console.log(convertedSchema);
+})();
 
-console.log(convertedSchema);
 ```
 
 The example prints out
@@ -44,8 +46,6 @@ The example prints out
 }
 ```
 
-**NOTE**: `$ref`s are not dereferenced. Use a dereferencer such as [json-schema-ref-parser](https://www.npmjs.com/package/json-schema-ref-parser) prior to using this package.
-
 ### Options
 
 The function accepts `options` object as the second argument.
@@ -54,6 +54,9 @@ The function accepts `options` object as the second argument.
 
 If set to `false`, converts the provided schema in place. If `true`, clones the schema by converting it to JSON and back. The overhead of the cloning is usually negligible. Defaults to `true`.
 
+#### `dereference` (boolean)
+
+If set to `true`, all local and remote references (http/https and file) $refs will be dereferenced. Defaults to `false`.
 
 ## Why?
 
