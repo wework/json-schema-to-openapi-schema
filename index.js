@@ -1,4 +1,11 @@
+'use strict';
+
 const schemaWalker = require('@cloudflare/json-schema-walker');
+const { Resolver } = require('@stoplight/json-ref-resolver');
+const { parse } = require('@stoplight/yaml');
+const fetch = require('node-fetch');
+const fs = require('fs');
+const readFileAsync = require('util').promisify(fs.readFile);
 
 function InvalidTypeError(message) {
 	this.name = 'InvalidTypeError';
@@ -7,11 +14,15 @@ function InvalidTypeError(message) {
 
 InvalidTypeError.prototype = new Error();
 
-function convert(schema, options = {}) {
-	const { cloneSchema = true } = options;
+async function convert(schema, options = {}) {
+	const { cloneSchema = true, dereference = false } = options;
 
 	if (cloneSchema) {
 		schema = JSON.parse(JSON.stringify(schema));
+	}
+
+	if (dereference) {
+		({ result: schema } = await resolver.resolve(schema));
 	}
 
 	const vocab = schemaWalker.getVocabulary(schema, schemaWalker.vocabularies.DRAFT_04);
@@ -32,8 +43,8 @@ function convertSchema(schema, path, parent, parentPath) {
 	schema = rewriteConst(schema);
 	schema = convertDependencies(schema);
 	schema = rewriteIfThenElse(schema);
-        schema = rewriteExclusiveMinMax(schema);
-        schema = convertExamples(schema);
+	schema = rewriteExclusiveMinMax(schema);
+	schema = convertExamples(schema);
 
 	if (typeof schema['patternProperties'] === 'object') {
 		schema = convertPatternProperties(schema);
@@ -199,5 +210,39 @@ function rewriteExclusiveMinMax(schema) {
 	}
 	return schema;
 }
+
+const httpReader = {
+	async resolve(ref) {
+		return (await fetch(String(ref))).text();
+	},
+};
+
+const resolver = new Resolver({
+	resolvers: {
+		http: httpReader,
+		https: httpReader,
+		file: {
+			resolve(ref) {
+				return readFileAsync(ref.path(), 'utf8');
+			},
+		},
+	},
+
+	transformDereferenceResult(opts) {
+		// this should not be needed, but unfortunately is due to a quirk in json-ref-resolver returning sealed object
+		opts.result = JSON.parse(JSON.stringify(opts.result));
+		return opts;
+	},
+
+	parseResolveResult(opts) {
+		try {
+			opts.result = parse(opts.result);
+		} catch {
+			// let's carry on
+		}
+
+		return opts;
+	},
+});
 
 module.exports = convert;

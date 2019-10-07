@@ -3,7 +3,7 @@
 const convert = require('../');
 const should = require('should');
 
-it('iterates allOfs and converts types', () => {
+it('iterates allOfs and converts types', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		allOf: [
@@ -28,7 +28,7 @@ it('iterates allOfs and converts types', () => {
 		]
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		allOf: [
@@ -56,7 +56,7 @@ it('iterates allOfs and converts types', () => {
 	should(result).deepEqual(expected, 'iterated allOfs');
 });
 
-it('iterates anyOfs and converts types', () => {
+it('iterates anyOfs and converts types', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		anyOf: [
@@ -86,7 +86,7 @@ it('iterates anyOfs and converts types', () => {
 		]
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		anyOf: [
@@ -119,7 +119,7 @@ it('iterates anyOfs and converts types', () => {
 	should(result).deepEqual(expected, 'anyOfs iterated');
 });
 
-it('iterates oneOfs and converts types', () => {
+it('iterates oneOfs and converts types', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		oneOf: [
@@ -147,7 +147,7 @@ it('iterates oneOfs and converts types', () => {
 		]
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		oneOf: [
@@ -180,7 +180,7 @@ it('iterates oneOfs and converts types', () => {
 	should(result).deepEqual(expected, 'oneOfs iterated');
 });
 
-it('converts types in not', () => {
+it('converts types in not', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
@@ -192,7 +192,7 @@ it('converts types in not', () => {
 		}
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		type: 'object',
@@ -209,7 +209,7 @@ it('converts types in not', () => {
 });
 
 
-it('nested combination keywords', () => {
+it('nested combination keywords', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		anyOf: [
@@ -250,7 +250,7 @@ it('nested combination keywords', () => {
 		]
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		anyOf: [

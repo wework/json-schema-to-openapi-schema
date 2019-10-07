@@ -3,7 +3,7 @@
 const convert = require('../');
 const should = require('should');
 
-it('items', () => {
+it('items', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'array',
@@ -14,7 +14,7 @@ it('items', () => {
 		}
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		type: 'array',

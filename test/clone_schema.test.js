@@ -3,13 +3,13 @@
 const convert = require('../');
 const should = require('should');
 
-it('cloning schema by default', () => {
+it('cloning schema by default', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: ['string', 'null'],
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		type: 'string',
@@ -20,13 +20,13 @@ it('cloning schema by default', () => {
 	should(result).not.deepEqual(schema, 'the schema was modified in place');
 });
 
-it('cloning schema with cloneSchema option', () => {
+it('cloning schema with cloneSchema option', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: ['string', 'null'],
 	};
 
-	const result = convert(schema, { cloneSchema: true });
+	const result = await convert(schema, { cloneSchema: true });
 
 	const expected = {
 		type: 'string',
@@ -37,13 +37,13 @@ it('cloning schema with cloneSchema option', () => {
 	should(result).not.deepEqual(schema, 'the schema was modified in place');
 });
 
-it('direct schema modification', () => {
+it('direct schema modification', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: ['string', 'null'],
 	};
 
-	const result = convert(schema, { cloneSchema: false });
+	const result = await convert(schema, { cloneSchema: false });
 
 	const expected = {
 		type: 'string',

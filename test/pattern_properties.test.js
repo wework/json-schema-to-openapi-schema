@@ -3,7 +3,7 @@
 const convert = require('../');
 const should = require('should');
 
-it('renames patternProperties to x-patternProperties', () => {
+it('renames patternProperties to x-patternProperties', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'object',
@@ -17,7 +17,7 @@ it('renames patternProperties to x-patternProperties', () => {
 		}
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		type: 'object',

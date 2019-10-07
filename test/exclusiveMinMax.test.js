@@ -3,7 +3,7 @@
 const convert = require('../');
 const should = require('should');
 
-it('exclusiveMinMax', () => {
+it('exclusiveMinMax', async () => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'integer',
@@ -11,7 +11,7 @@ it('exclusiveMinMax', () => {
 		exclusiveMinimum: 0
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	const expected = {
 		type: 'integer',

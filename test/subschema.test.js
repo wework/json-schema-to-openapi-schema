@@ -3,7 +3,7 @@
 const convert = require('../');
 const should = require('should');
 
-it('strips $id from all subschemas not just root`', () => {
+it('strips $id from all subschemas not just root`', async () => {
 	const schema = {
     $id: "https://foo/bla",
     $schema: "http://json-schema.org/draft-06/schema#",
@@ -26,7 +26,7 @@ it('strips $id from all subschemas not just root`', () => {
     }
 	};
 
-	const result = convert(schema);
+	const result = await convert(schema);
 
 	should(result).deepEqual({
     type: "object",
