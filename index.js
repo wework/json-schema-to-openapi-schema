@@ -170,7 +170,7 @@ function convertExamples(schema) {
 }
 
 function rewriteConst(schema) {
-	if (schema.const) {
+	if (Object.hasOwnProperty.call(schema, 'const')) {
 		schema.enum = [ schema.const ];
 		delete schema.const;
 	}
