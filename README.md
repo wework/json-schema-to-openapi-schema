@@ -93,6 +93,7 @@ npm test
 
 ## Thanks
 
+- [Stoplight][] for donating time and effort to this project, and many more.
 - [mikunn][] for creating [openapi-schema-to-json-schema] which this is based on.
 - [Phil Sturgeon][] for flipping that conversion script about face.
 - [WeWork][] for giving this a home for a while.
@@ -100,6 +101,7 @@ npm test
 
 [mikunn]: https://github.com/mikunn
 [WeWork]: https://github.com/wework
+[Stoplight]: https://stoplight.io/
 [Phil Sturgeon]: https://github.com/philsturgeon
 [openapi-schema-to-json-schema]: https://github.com/mikunn/openapi-schema-to-json-schema
 [link-contributors]: https://github.com/openapi-js/json-schema-to-openapi-schema/graphs/contributors
