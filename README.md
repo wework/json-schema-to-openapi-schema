@@ -91,13 +91,15 @@ To run the test-suite:
 npm test
 ```
 
-## Credits
+## Thanks
 
-- [mikunn] for creating [openapi-schema-to-json-schema] which this is based on
-- [Phil Sturgeon] for flipping that conversion script about face
+- [mikunn][] for creating [openapi-schema-to-json-schema] which this is based on.
+- [Phil Sturgeon][] for flipping that conversion script about face.
+- [WeWork][] for giving this a home for a while.
 - [All Contributors][link-contributors]
 
 [mikunn]: https://github.com/mikunn
+[WeWork]: https://github.com/wework
 [Phil Sturgeon]: https://github.com/philsturgeon
 [openapi-schema-to-json-schema]: https://github.com/mikunn/openapi-schema-to-json-schema
 [link-contributors]: https://github.com/openapi-js/json-schema-to-openapi-schema/graphs/contributors
