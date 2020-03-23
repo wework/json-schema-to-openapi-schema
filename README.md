@@ -2,9 +2,11 @@
 
 A little NodeJS package to convert JSON Schema to a [OpenAPI Schema Object](http://spec.openapis.org/oas/v3.0.3.html#schema-object).
 
+[![Treeware](https://img.shields.io/badge/dynamic/json?color=brightgreen&label=Treeware&query=%24.total&url=https%3A%2F%2Fpublic.offset.earth%2Fusers%2Ftreeware%2Ftrees)](https://treeware.earth)
+
 ## Features
 
-* converts JSON Schema Draft 00 Wright (a.k.a draft v5) to OpenAPI 3.0 Schema Object
+* converts JSON Schema Draft 04 to OpenAPI 3.0 Schema Object
 * switches `type: ['foo', 'null']` to `type: foo` and `nullable: true`
 * supports deep structures with nested `allOf`s etc.
 * switches `patternProperties` to `x-patternProperties`
@@ -12,9 +14,11 @@ A little NodeJS package to convert JSON Schema to a [OpenAPI Schema Object](http
 
 ## Installation
 
-```
+``` shell
 npm install --save @openapi-contrib/json-schema-to-openapi-schema
 ```
+
+Requires NodeJS v10 or greater.
 
 ## Usage
 
@@ -84,6 +88,10 @@ To run the test-suite:
 ```shell
 npm test
 ```
+
+## Treeware
+
+This package is [Treeware](https://treeware.earth). If you use it in production, then we ask that you [**buy the world a tree**](https://plant.treeware.earth/{venfor}/{package}) to thank us for our work. By contributing to the Treeware forest you’ll be creating employment for local families and restoring wildlife habitats.
 
 ## Thanks
 

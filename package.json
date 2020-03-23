@@ -1,11 +1,11 @@
 {
   "name": "@openapi-contrib/json-schema-to-openapi-schema",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "Converts a JSON Schema to OpenAPI Schema Object",
   "main": "index.js",
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "nyc report --reporter=text-lcov"
   },
   "repository": "github:openapi-contrib/json-schema-to-openapi-schema",
   "author": "OpenAPI Contrib",
@@ -15,9 +15,10 @@
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
-    "mocha": "^5.0.0",
+    "mocha": "^7.1.1",
     "nock": "^11.3.6",
-    "nyc": "^11.6.0",
+    "nyc": "^15.0.0",
+    "semantic-release": "^17.0.4",
     "should": "^13.2.0"
   },
   "dependencies": {
