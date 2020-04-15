@@ -8,8 +8,10 @@ const { join } = require('path');
 it('not dereferencing schema by default', async () => {
   const schema = {
     $schema: 'http://json-schema.org/draft-04/schema#',
-    foo: {
-      $ref: '#/definitions/foo',
+    properties: {
+      foo: {
+        $ref: '#/definitions/foo',
+      },
     },
     definitions: {
       foo: ['string', 'null'],

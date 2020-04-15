@@ -6,6 +6,7 @@ const { parse } = require('@stoplight/yaml');
 const fetch = require('node-fetch');
 const fs = require('fs');
 const readFileAsync = require('util').promisify(fs.readFile);
+const oas3schema = require('./refs/oas3-schema.json');
 
 function InvalidTypeError(message) {
 	this.name = 'InvalidTypeError';
@@ -52,8 +53,10 @@ function convertSchema(schema, path, parent, parentPath) {
 
 	if (schema.type === 'array' && typeof schema.items === 'undefined') {
 		schema.items = {};
-	}
+  }
 
+  // should be called last
+  schema = convertIllegalKeywordsAsExtensions(schema);
 	return schema;
 }
 
@@ -160,6 +163,17 @@ function convertPatternProperties(schema) {
 	return schema;
 }
 
+// keywords (or property names) that are not recognized within OAS3 are rewritten into extensions.
+function convertIllegalKeywordsAsExtensions(schema) {
+  Object.keys(schema)
+    .filter(keyword => !keyword.startsWith(oasExtensionPrefix) && !allowedKeywords.includes(keyword))
+    .forEach(keyword => {
+      schema[oasExtensionPrefix + keyword] = schema[keyword];
+      delete schema[keyword];
+    });
+  return schema;
+}
+
 function convertExamples(schema) {
   if (schema['examples'] && Array.isArray(schema['examples'])) {
     schema['example'] = schema['examples'][0];
@@ -244,5 +258,12 @@ const resolver = new Resolver({
 		return opts;
 	},
 });
+
+const oasExtensionPrefix = 'x-';
+
+// TODO: having definitions inside an oas3 schema isn't exactly valid,
+// maybe it is an idea to extract and split them into multiple oas3 schemas and reference to them.
+// For now leaving as is.
+const allowedKeywords = ['$ref', 'definitions'].concat(Object.keys(oas3schema.definitions.Schema.properties));
 
 module.exports = convert;

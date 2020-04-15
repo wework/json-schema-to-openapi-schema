@@ -1,0 +1,60 @@
+{
+  "description": "Descriminate object by objectType",
+  "type": "object",
+  "properties": {
+    "event": {
+      "type": "object",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/EventA"
+        },
+        {
+          "$ref": "#/definitions/EventB"
+        }
+      ],
+      "required": [
+        "objectType"
+      ],
+      "discriminator": {
+        "propertyName": "objectType",
+        "mapping": {
+          "ev-a": "#/definitions/schemas/EventA",
+          "ev-b": "#/definitions/schemas/EventB"
+        }
+      }
+    },
+    "health": {
+      "type": "object",
+      "properties": {
+        "unavailable": {
+          "type": "boolean",
+          "x-produced-by": "health-checker"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "EventA": {
+      "type": "object",
+      "properties": {
+        "objectType": {
+          "type": "string"
+        },
+        "infoA": {
+          "type": "string"
+        }
+      }
+    },
+    "EventB": {
+      "type": "object",
+      "properties": {
+        "objectType": {
+          "type": "string"
+        },
+        "infoB": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}
