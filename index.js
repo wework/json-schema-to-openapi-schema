@@ -122,28 +122,17 @@ function convertTypes(schema) {
 	validateType(schema.type);
 
 	if (Array.isArray(schema.type)) {
-
-		if (schema.type.length > 2 || !schema.type.includes('null')) {
-			throw new Error('Type of ' + schema.type.join(',') + ' is too confusing for OpenAPI to understand. Found in ' + JSON.stringify(schema));
+		if (schema.type.includes('null')) {
+			schema.nullable = true;
 		}
-
-		switch (schema.type.length) {
-			case 0:
-				delete schema.type;
-				break;
-
-			case 1:
-				if (schema.type === 'null') {
-					schema.nullable = true;
-				}
-				else {
-					schema.type = schema.type[0];
-				}
-				break;
-
-			default:
-				schema.type = schema.type.find(type => type !== 'null');
-				schema.nullable = true;
+		const typesWithoutNull = schema.type.filter(type => type !== 'null');
+		if (typesWithoutNull.length === 0) {
+			delete schema.type
+		} else if (typesWithoutNull.length === 1) {
+			schema.type = typesWithoutNull[0];
+		} else {
+			delete schema.type;
+			schema.anyOf = typesWithoutNull.map(type => ({ type }));
 		}
 	}
 	else if (schema.type === 'null') {
