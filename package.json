@@ -3,6 +3,7 @@
   "version": "0.0.0-development",
   "description": "Converts a JSON Schema to OpenAPI Schema Object",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha",
     "coverage": "nyc report --reporter=text-lcov"
