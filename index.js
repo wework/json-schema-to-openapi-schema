@@ -8,12 +8,21 @@ const fs = require('fs');
 const readFileAsync = require('util').promisify(fs.readFile);
 const oas3schema = require('./refs/oas3-schema.json');
 
-function InvalidTypeError(message) {
-	this.name = 'InvalidTypeError';
-	this.message = message;
+class InvalidTypeError extends Error {
+  constructor(message) {
+    super()
+    this.name = 'InvalidTypeError';
+    this.message = message;
+  }
 }
 
-InvalidTypeError.prototype = new Error();
+class DereferencingError extends Error {
+  constructor(errors) {
+    super()
+    this.name = 'DereferencingError';
+    this.errors = errors;
+  }
+}
 
 async function convert(schema, options = {}) {
 	const { cloneSchema = true, dereference = false } = options;
@@ -23,7 +32,11 @@ async function convert(schema, options = {}) {
 	}
 
 	if (dereference) {
-		({ result: schema } = await resolver.resolve(schema));
+		const result = await resolver.resolve(schema);
+    if (result.errors && result.errors.length > 0) {
+      throw new DereferencingError(result.errors)
+    }
+    schema = result.result;
 	}
 
 	const vocab = schemaWalker.getVocabulary(schema, schemaWalker.vocabularies.DRAFT_04);

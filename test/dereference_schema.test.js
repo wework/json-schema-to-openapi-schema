@@ -104,3 +104,23 @@ it('dereferencing schema with file references', async () => {
 
   should(result).deepEqual(expected, 'result does not match the expected');
 });
+
+it('throws an error when dereferecing fails', async () => {
+  const schema = {
+    $schema: "http://json-schema.org/draft-04/schema#",
+    properties: {
+      foo: {
+        $ref: "./bad.json",
+      },
+    },
+  };
+
+  let error;
+  try {
+    await convert(schema, { dereference: true });
+  } catch (e) {
+    error = e;
+  }
+
+  should(error).have.property('errors')
+})
