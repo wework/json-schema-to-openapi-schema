@@ -1,0 +1,26 @@
+{
+  "default": [
+    "Usage:",
+    "    json-schema-to-openapi-schema <command> [options] <file>",
+    "",
+    "Commands:",
+    "    convert                 Converts JSON Schema Draft 04 to OpenAPI 3.0 Schema Object",
+    "",
+    "Options:",
+    "    -h, --help              Show help for any command",
+    "    -v, --version           Output the CLI version number",
+    "    -d, --dereference       If set all local and remote references (http/https and file) $refs will be dereferenced",
+    ""
+  ],
+  "convert": [
+    "Converts JSON Schema Draft 04 to OpenAPI 3.0 Schema Object.",
+    "Returns a non-zero exit code if conversion fails.",
+    "",
+    "Usage:",
+    "    json-schema-to-openapi-schema convert [options] <file>",
+    "",
+    "Options:",
+    "    -d, --dereference       If set all local and remote references (http/https and file) $refs will be dereferenced",
+    ""
+  ]
+}

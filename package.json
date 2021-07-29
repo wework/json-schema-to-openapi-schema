@@ -3,6 +3,9 @@
   "version": "0.0.0-development",
   "description": "Converts a JSON Schema to OpenAPI Schema Object",
   "main": "index.js",
+  "bin": {
+    "json-schema-to-openapi-schema": "bin/json-schema-to-openapi-schema.js"
+  },
   "types": "index.d.ts",
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha",
@@ -25,7 +28,9 @@
     "@cloudflare/json-schema-walker": "^0.1.1",
     "@stoplight/json-ref-resolver": "^3.1.1",
     "@stoplight/yaml": "^3.7.1",
+    "chalk": "^4.1.1",
     "node-fetch": "^2.6.0",
-    "tslib": "^1.11.1"
+    "tslib": "^1.11.1",
+    "yargs": "^17.0.1"
   }
 }

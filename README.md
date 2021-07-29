@@ -62,6 +62,21 @@ If set to `false`, converts the provided schema in place. If `true`, clones the 
 
 If set to `true`, all local and remote references (http/https and file) $refs will be dereferenced. Defaults to `false`.
 
+## Command Line
+
+```sh
+Usage:
+    json-schema-to-openapi-schema <command> [options] <file>
+
+Commands:
+    convert                 Converts JSON Schema Draft 04 to OpenAPI 3.0 Schema Object
+
+Options:
+    -h, --help              Show help for any command
+    -v, --version           Output the CLI version number
+    -d, --dereference       If set all local and remote references (http/https and file) $refs will be dereferenced
+```
+
 ## Why?
 
 OpenAPI is often described as an extension of JSON Schema, but both specs have changed over time and grown independently. OpenAPI v2 was based on JSON Schema draft v4 with a long list of deviations, but OpenAPI v3 shrank that list, upping their support to draft v4 and making the list of discrepancies shorter. This has been solved for OpenAPI v3.1, but for those using OpenAPI v3.0, you can use this tool to solve [the divergence](https://apisyouwonthate.com/blog/openapi-and-json-schema-divergence).
