@@ -18,19 +18,19 @@
     "node": ">=10"
   },
   "devDependencies": {
-    "coveralls": "^3.0.11",
-    "mocha": "^7.1.1",
-    "nock": "^11.9.1",
-    "nyc": "^15.0.1",
-    "should": "^13.2.0"
+    "coveralls": "^3.1.1",
+    "mocha": "^10.0.0",
+    "nock": "^13.2.9",
+    "nyc": "^15.1.0",
+    "should": "^13.2.3"
   },
   "dependencies": {
     "@cloudflare/json-schema-walker": "^0.1.1",
-    "@stoplight/json-ref-resolver": "^3.1.1",
-    "@stoplight/yaml": "^3.7.1",
-    "chalk": "^4.1.1",
+    "@stoplight/json-ref-resolver": "^3.1.4",
+    "@stoplight/yaml": "^4.2.3",
+    "chalk": "^5.0.1",
     "node-fetch": "^2.6.0",
-    "tslib": "^1.11.1",
-    "yargs": "^17.0.1"
+    "tslib": "^2.4.0",
+    "yargs": "^17.5.1"
   }
 }

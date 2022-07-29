@@ -4,8 +4,6 @@ const schemaWalker = require('@cloudflare/json-schema-walker');
 const { Resolver } = require('@stoplight/json-ref-resolver');
 const { parse } = require('@stoplight/yaml');
 const fetch = require('node-fetch');
-const fs = require('fs');
-const readFileAsync = require('util').promisify(fs.readFile);
 const oas3schema = require('./refs/oas3-schema.json');
 
 class InvalidTypeError extends Error {
@@ -238,7 +236,9 @@ const resolver = new Resolver({
 		http: httpReader,
 		https: httpReader,
 		file: {
-			resolve(ref) {
+			resolve: async (ref) => {
+				const fs = require('fs');
+				const readFileAsync = (fs.promises && fs.promises.readFile) || require('util').promisify(fs.readFile);
 				return readFileAsync(ref.path(), 'utf8');
 			},
 		},
