@@ -1,0 +1,63 @@
+// Vitest Snapshot v1
+
+exports[`converting circular/openapi.json without circular references turned off  1`] = `
+{
+  "definitions": {
+    "child": {
+      "properties": {
+        "name": {
+          "type": "string",
+        },
+        "parents": {
+          "items": {
+            "properties": {
+              "children": {
+                "items": [Circular],
+                "type": "array",
+              },
+              "name": {
+                "type": "string",
+              },
+            },
+          },
+          "type": "array",
+        },
+      },
+    },
+    "parent": {
+      "properties": {
+        "children": {
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string",
+              },
+              "parents": {
+                "items": [Circular],
+                "type": "array",
+              },
+            },
+          },
+          "type": "array",
+        },
+        "name": {
+          "type": "string",
+        },
+      },
+    },
+    "person": {
+      "properties": {
+        "name": {
+          "type": "string",
+        },
+        "spouse": {
+          "type": [Circular],
+        },
+      },
+    },
+    "thing": {
+      "$ref": "#/definitions/thing",
+    },
+  },
+}
+`;

@@ -1,21 +1,18 @@
-'use strict';
+import convert from '../src';
 
-const convert = require('../');
-const should = require('should');
-
-it('maintain readOnly and writeOnly props', async () => {
+it('maintain readOnly and writeOnly props', async ({ expect }) => {
 	const schema = {
 		type: 'object',
 		properties: {
 			prop1: {
 				type: 'string',
-				readOnly: true
+				readOnly: true,
 			},
 			prop2: {
 				type: 'string',
-				writeOnly: true
-			}
-		}
+				writeOnly: true,
+			},
+		},
 	};
 
 	const result = await convert(schema);
@@ -25,26 +22,26 @@ it('maintain readOnly and writeOnly props', async () => {
 		properties: {
 			prop1: {
 				type: 'string',
-				readOnly: true
+				readOnly: true,
 			},
 			prop2: {
 				type: 'string',
-				writeOnly: true
-			}
-		}
+				writeOnly: true,
+			},
+		},
 	};
 
-	should(result).deepEqual(expected);
+	expect(result).toEqual(expected);
 });
 
-it('deep schema', async () => {
+it('deep schema', async ({ expect }) => {
 	const schema = {
 		type: 'object',
 		required: ['prop1', 'prop2'],
 		properties: {
 			prop1: {
 				type: 'string',
-				readOnly: true
+				readOnly: true,
 			},
 			prop2: {
 				allOf: [
@@ -54,22 +51,22 @@ it('deep schema', async () => {
 						properties: {
 							prop3: {
 								type: 'object',
-								readOnly: true
-							}
-						}
+								readOnly: true,
+							},
+						},
 					},
 					{
 						type: 'object',
 						properties: {
 							prop4: {
 								type: 'object',
-								readOnly: true
-							}
-						}
+								readOnly: true,
+							},
+						},
 					},
-				]
-			}
-		}
+				],
+			},
+		},
 	};
 
 	const result = await convert(schema);
@@ -80,7 +77,7 @@ it('deep schema', async () => {
 		properties: {
 			prop1: {
 				type: 'string',
-				readOnly: true
+				readOnly: true,
 			},
 			prop2: {
 				allOf: [
@@ -90,23 +87,23 @@ it('deep schema', async () => {
 						properties: {
 							prop3: {
 								type: 'object',
-								readOnly: true
-							}
-						}
+								readOnly: true,
+							},
+						},
 					},
 					{
 						type: 'object',
 						properties: {
 							prop4: {
 								type: 'object',
-								readOnly: true
-							}
-						}
+								readOnly: true,
+							},
+						},
 					},
-				]
-			}
-		}
+				],
+			},
+		},
 	};
 
-	should(result).deepEqual(expected);
+	expect(result).toEqual(expected);
 });

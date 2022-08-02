@@ -1,38 +1,35 @@
-'use strict';
+import convert from '../src';
 
-const convert = require('../');
-const should = require('should');
-
-it('const', async () => {
+it('const', async ({ expect }) => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'string',
-		const: 'hello'
+		const: 'hello',
 	};
 
 	const result = await convert(schema);
 
 	const expected = {
 		type: 'string',
-		enum: [ 'hello' ]
+		enum: ['hello'],
 	};
 
-	should(result).deepEqual(expected, 'converted');
+	expect(result).toEqual(expected);
 });
 
-it('falsy const', async () => {
+it('falsy const', async ({ expect }) => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'boolean',
-		const: false
+		const: false,
 	};
 
 	const result = await convert(schema);
 
 	const expected = {
 		type: 'boolean',
-		enum: [ false ]
+		enum: [false],
 	};
 
-	should(result).deepEqual(expected, 'converted');
+	expect(result).toEqual(expected);
 });

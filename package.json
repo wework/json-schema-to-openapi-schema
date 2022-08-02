@@ -1,36 +1,57 @@
 {
-  "name": "@openapi-contrib/json-schema-to-openapi-schema",
-  "version": "0.0.0-development",
-  "description": "Converts a JSON Schema to OpenAPI Schema Object",
-  "main": "index.js",
-  "bin": {
-    "json-schema-to-openapi-schema": "bin/json-schema-to-openapi-schema.js"
-  },
-  "types": "index.d.ts",
-  "scripts": {
-    "test": "nyc --reporter=html --reporter=text mocha",
-    "coverage": "nyc report --reporter=text-lcov"
-  },
-  "repository": "github:openapi-contrib/json-schema-to-openapi-schema",
-  "author": "OpenAPI Contrib",
-  "license": "MIT",
-  "engines": {
-    "node": ">=10"
-  },
-  "devDependencies": {
-    "coveralls": "^3.1.1",
-    "mocha": "^10.0.0",
-    "nock": "^13.2.9",
-    "nyc": "^15.1.0",
-    "should": "^13.2.3"
-  },
-  "dependencies": {
-    "@cloudflare/json-schema-walker": "^0.1.1",
-    "@stoplight/json-ref-resolver": "^3.1.4",
-    "@stoplight/yaml": "^4.2.3",
-    "chalk": "^5.0.1",
-    "node-fetch": "^2.6.0",
-    "tslib": "^2.4.0",
-    "yargs": "^17.5.1"
-  }
+	"name": "@openapi-contrib/json-schema-to-openapi-schema",
+	"version": "0.0.0-development",
+	"description": "Converts a JSON Schema to OpenAPI Schema Object",
+	"bin": {
+		"json-schema-to-openapi-schema": "bin/json-schema-to-openapi-schema.js"
+	},
+	"types": "dist/mjs/src/index.d.ts",
+	"files": [
+		"/dist"
+	],
+	"main": "dist/cjs/src/index.js",
+	"module": "dist/mjs/src/index.js",
+	"exports": {
+		".": {
+			"import": "./dist/mjs/src/index.js",
+			"require": "./dist/cjs/src/index.js"
+		}
+	},
+	"scripts": {
+		"prepublish": "yarn build",
+		"build": "rm -fr dist/* && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && node scripts/fixup.cjs",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest",
+		"coverage": "vitest --coverage"
+	},
+	"repository": "github:openapi-contrib/json-schema-to-openapi-schema",
+	"author": "OpenAPI Contrib",
+	"license": "MIT",
+	"engines": {
+		"node": ">=10"
+	},
+	"dependencies": {
+		"@apidevtools/json-schema-ref-parser": "^9.0.9",
+		"chalk": "^5.0.1",
+		"json-schema-walker": "^0.0.4",
+		"yargs": "^17.5.1"
+	},
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^5.32.0",
+		"@typescript-eslint/parser": "^5.32.0",
+		"c8": "^7.12.0",
+		"eslint": "^8.21.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-prettier": "^4.2.1",
+		"eslint-plugin-unused-imports": "^2.0.0",
+		"mocha": "^10.0.0",
+		"nock": "^13.2.9",
+		"prettier": "^2.7.1",
+		"typescript": "^4.7.4",
+		"vitest": "^0.20.2"
+	},
+	"prettier": {
+		"singleQuote": true,
+		"useTabs": true
+	}
 }

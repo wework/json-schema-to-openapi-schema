@@ -1,5 +1,5 @@
 definitions:
   foo:
-    type: "string"
+    type: 'string'
   bar:
-    type: "number"
+    type: 'number'

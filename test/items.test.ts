@@ -1,17 +1,14 @@
-'use strict';
+import convert from '../src';
 
-const convert = require('../');
-const should = require('should');
-
-it('items', async () => {
+it('items', async ({ expect }) => {
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		type: 'array',
 		items: {
 			type: 'string',
 			format: 'date-time',
-			example: '2017-01-01T12:34:56Z'
-		}
+			example: '2017-01-01T12:34:56Z',
+		},
 	};
 
 	const result = await convert(schema);
@@ -21,9 +18,9 @@ it('items', async () => {
 		items: {
 			type: 'string',
 			format: 'date-time',
-			example: '2017-01-01T12:34:56Z'
-		}
+			example: '2017-01-01T12:34:56Z',
+		},
 	};
 
-	should(result).deepEqual(expected, 'converted');
+	expect(result).toEqual(expected);
 });

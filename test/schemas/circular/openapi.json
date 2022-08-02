@@ -1,0 +1,45 @@
+{
+	"definitions": {
+		"thing": {
+			"$ref": "#/definitions/thing"
+		},
+		"person": {
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"spouse": {
+					"type": {
+						"$ref": "#/definitions/person"
+					}
+				}
+			}
+		},
+		"parent": {
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"children": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/child"
+					}
+				}
+			}
+		},
+		"child": {
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"parents": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/parent"
+					}
+				}
+			}
+		}
+	}
+}
