@@ -27,7 +27,10 @@ module.exports = {
 				SwitchCase: 1,
 			},
 		],
-		'linebreak-style': ['error', 'unix'],
+		'linebreak-style': [
+			'error',
+			process.platform === 'win32' ? 'windows' : 'unix',
+		],
 		quotes: ['error', 'single'],
 		semi: ['error', 'always'],
 		'@typescript-eslint/ban-ts-comment': 'off',
@@ -38,5 +41,7 @@ module.exports = {
 				prefer: 'type-imports',
 			},
 		],
+		'@typescript-eslint/no-explicit-any': 'off',
 	},
+	ignorePatterns: ['dist/**', 'bin/**'],
 };

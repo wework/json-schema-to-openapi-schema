@@ -5,8 +5,9 @@ import type {
 	JSONSchema7Definition,
 } from 'json-schema';
 import type { Options, SchemaType, SchemaTypeKeys } from './types';
-import { oas3schema } from './lib/openApiSchema';
 import { Walker } from 'json-schema-walker';
+import { allowedKeywords } from './const';
+import type { OpenAPI3 } from 'openapi-typescript';
 
 class InvalidTypeError extends Error {
 	constructor(message: string) {
@@ -18,23 +19,63 @@ class InvalidTypeError extends Error {
 
 const oasExtensionPrefix = 'x-';
 
-// TODO: having definitions inside an oas3 schema isn't exactly valid,
-// maybe it is an idea to extract and split them into multiple oas3 schemas and reference to them.
-// For now leaving as is.
-const allowedKeywords = [
-	'$ref',
-	'definitions',
-	...Object.keys(oas3schema.definitions.Schema.properties),
-];
+const handleDefinition = async <T>(
+	def: JSONSchema7Definition | JSONSchema6Definition | JSONSchema4,
+	schema: T
+) => {
+	if (typeof def !== 'object') {
+		return def;
+	}
+
+	const type = def.type;
+	if (type) {
+		// Walk just the definitions types
+		const walker = new Walker<T>();
+		await walker.loadSchema({ ...def, $schema: schema['$schema'] } as any, {
+			dereference: true,
+			cloneSchema: true,
+			dereferenceOptions: {
+				dereference: {
+					circular: 'ignore',
+				},
+			},
+		});
+		await walker.walk(convertSchema, walker.vocabularies.DRAFT_07);
+		return walker.rootSchema;
+	} else if (Array.isArray(def)) {
+		// if it's an array, we might want to reconstruct the type;
+		const typeArr = def;
+		const hasNull = typeArr.includes('null');
+		if (hasNull) {
+			const actualTypes = typeArr.filter((l) => l !== 'null');
+			return {
+				type: actualTypes.length === 1 ? actualTypes[0] : actualTypes,
+				nullable: true,
+				// this is incorrect but thats ok, we are in the inbetween phase here
+			} as JSONSchema7Definition | JSONSchema6Definition | JSONSchema4;
+		}
+	}
+
+	return def;
+};
 
 const convert = async <T = JSONSchema>(
 	schema: T,
 	options?: Options
-): Promise<SchemaType> => {
+): Promise<OpenAPI3> => {
 	const walker = new Walker<T>();
+	const convertDefs = options?.convertUnreferencedDefinitions ?? true;
 	await walker.loadSchema(schema, options);
 	await walker.walk(convertSchema, walker.vocabularies.DRAFT_07);
-	return walker.rootSchema;
+	// if we want to convert unreferenced definitions, we need to do it iteratively here
+	const rootSchema = walker.rootSchema as unknown as JSONSchema;
+	if (convertDefs && rootSchema?.definitions) {
+		for (const defName in rootSchema.definitions) {
+			const def = rootSchema.definitions[defName];
+			rootSchema.definitions[defName] = await handleDefinition(def, schema);
+		}
+	}
+	return rootSchema as OpenAPI3;
 };
 
 function stripIllegalKeywords(schema: SchemaType) {

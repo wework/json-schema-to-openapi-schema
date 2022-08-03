@@ -1,6 +1,7 @@
 import convert from '../src';
 import { join } from 'path';
 import nock from 'nock';
+import * as path from 'path';
 
 it('not dereferencing schema by default', async ({ expect }) => {
 	const schema = {
@@ -21,6 +22,12 @@ it('not dereferencing schema by default', async ({ expect }) => {
 	if ('$schema' in expected) {
 		delete expected.$schema;
 	}
+	expected.definitions = {
+		foo: {
+			type: 'string',
+			nullable: true,
+		},
+	};
 
 	expect(result).toEqual(expected);
 });
@@ -42,7 +49,7 @@ it('dereferencing schema with deference option', async ({ expect }) => {
 		type: 'string',
 		nullable: true,
 		definitions: {
-			foo: ['string', 'null'],
+			foo: { type: 'string', nullable: true },
 		},
 	};
 
@@ -218,12 +225,14 @@ it('dereferencing schema with remote http and https references', async ({
 });
 
 it('dereferencing schema with file references', async ({ expect }) => {
+	const fileRef = join(__dirname, 'fixtures/definitions.yaml#/definitions/bar');
+	const unixStyle = path.resolve(fileRef).split(path.sep).join('/');
 	const schema = {
 		$schema: 'http://json-schema.org/draft-04/schema#',
 		allOf: [
 			// points to current working directory, hence the `test` prefix
 			{ $ref: './test/fixtures/definitions.yaml#/definitions/foo' },
-			{ $ref: join(__dirname, 'fixtures/definitions.yaml#/definitions/bar') },
+			{ $ref: unixStyle },
 		],
 	};
 

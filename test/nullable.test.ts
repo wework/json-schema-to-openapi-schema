@@ -26,6 +26,112 @@ it('supports nullables inside sub-schemas', async ({ expect }) => {
 		oneOf: [{ type: 'string' }, { nullable: true }],
 	});
 });
+it('supports nullables inside definitions', async ({ expect }) => {
+	const schema = {
+		$schema: 'http://json-schema.org/draft-07/schema#',
+		definitions: {
+			Product: {
+				type: 'object',
+				properties: {
+					name: {
+						type: 'string',
+					},
+					price: {
+						type: 'number',
+					},
+					rating: {
+						type: ['null', 'number'],
+					},
+				},
+				required: ['name', 'price', 'rating'],
+			},
+			ProductList: {
+				type: 'object',
+				properties: {
+					name: {
+						type: 'string',
+					},
+					version: {
+						type: 'string',
+					},
+					products: {
+						type: 'array',
+						items: {
+							type: 'object',
+							properties: {
+								name: {
+									type: 'string',
+								},
+								price: {
+									type: 'number',
+								},
+								rating: {
+									type: ['null', 'number'],
+								},
+							},
+							required: ['name', 'price', 'rating'],
+						},
+					},
+				},
+				required: ['name', 'products', 'version'],
+			},
+		},
+	};
+
+	const result = await convert(schema);
+
+	expect(result).toEqual({
+		definitions: {
+			Product: {
+				type: 'object',
+				properties: {
+					name: {
+						type: 'string',
+					},
+					price: {
+						type: 'number',
+					},
+					rating: {
+						type: 'number',
+						nullable: true,
+					},
+				},
+				required: ['name', 'price', 'rating'],
+			},
+			ProductList: {
+				type: 'object',
+				properties: {
+					name: {
+						type: 'string',
+					},
+					version: {
+						type: 'string',
+					},
+					products: {
+						type: 'array',
+						items: {
+							type: 'object',
+							properties: {
+								name: {
+									type: 'string',
+								},
+								price: {
+									type: 'number',
+								},
+								rating: {
+									type: 'number',
+									nullable: true,
+								},
+							},
+							required: ['name', 'price', 'rating'],
+						},
+					},
+				},
+				required: ['name', 'products', 'version'],
+			},
+		},
+	});
+});
 
 it('does not add nullable for non null types', async ({ expect }) => {
 	const schema = {

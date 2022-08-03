@@ -2,7 +2,6 @@
 'use strict';
 
 const yargs = require('yargs');
-const chalk = require('chalk');
 const converter = require('../dist/cjs/index.js').default;
 const helpText = require('./help-text.json');
 const fs = require('fs');
@@ -103,6 +102,6 @@ function getHelpText(commandName) {
  */
 function errorHandler(err) {
 	let errorMessage = process.env.DEBUG ? err.stack : err.message;
-	console.error(chalk.red(errorMessage));
+	console.error(errorMessage);
 	process.exit(1);
 }

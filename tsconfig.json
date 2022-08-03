@@ -16,14 +16,14 @@
 		"noFallthroughCasesInSwitch": true,
 		"pretty": true,
 		"resolveJsonModule": true,
-		"rootDir": ".",
+		"rootDir": "src",
 		"skipLibCheck": true,
 		"noImplicitAny": false,
 		"strict": true,
-		"sourceMap": true,
-		"types": ["vitest/globals"]
+		"noUnusedParameters": true,
+		"sourceMap": true
 	},
 	"compileOnSave": false,
 	"exclude": ["node_modules", "dist", "coverage", "bin"],
-	"include": ["src", "test"]
+	"include": ["src"]
 }
