@@ -61,6 +61,16 @@ If set to `false`, converts the provided schema in place. If `true`, clones the 
 
 If set to `true`, all local and remote references (http/https and file) $refs will be dereferenced. Defaults to `false`.
 
+#### `convertUnreferencedDefinitions` (boolean)
+
+Defaults to true.
+
+If a schema had a definitions property (which is valid in JSONSchema), and only some of those entries are referenced, we'll still try and convert the remaining definitions to OpenAPI. If you do not want this behavior, set this to `false`.
+
+#### `dereferenceOptions` (object = $RefParser.Options)
+
+Options to pass to the dereferencer (@apidevtools/json-schema-ref-parser). To prevent circular references, pass `{ dereference: { circular: 'ignore' } }`.
+
 ## Command Line
 
 ```sh
