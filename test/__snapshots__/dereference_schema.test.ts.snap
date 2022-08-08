@@ -1,0 +1,52 @@
+// Vitest Snapshot v1
+
+exports[`throws an error when dereferecing fails 1`] = `
+{
+  "additionalProperties": false,
+  "definitions": {
+    "configvariable": {
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "type": "string",
+        },
+        "name": {
+          "pattern": "^[A-Z_]+[A-Z0-9_]*$",
+          "type": "string",
+        },
+        "required": {
+          "default": true,
+          "type": "boolean",
+        },
+      },
+      "required": [
+        "name",
+      ],
+      "type": "object",
+    },
+    "envVarName": {
+      "pattern": "^[A-Z_]+[A-Z0-9_]*$",
+      "type": "string",
+    },
+  },
+  "properties": {
+    "componentId": {
+      "pattern": "^(.*)$",
+      "title": "The component id Schema",
+      "type": "string",
+    },
+    "configurationTemplate": {
+      "items": {
+        "$ref": "#/definitions/configvariable",
+      },
+      "title": "The Configurationtemplate Schema",
+      "type": "array",
+    },
+  },
+  "required": [
+    "componentId",
+  ],
+  "title": "Component Manifest Schema",
+  "type": "object",
+}
+`;

@@ -264,3 +264,50 @@ it('throws an error when dereferecing fails', async ({ expect }) => {
 
 	expect(error).have.property('ioErrorCode', 'ENOENT');
 });
+
+it('throws an error when dereferecing fails', async ({ expect }) => {
+	const schema = {
+		definitions: {
+			envVarName: {
+				type: 'string',
+				pattern: '^[A-Z_]+[A-Z0-9_]*$',
+			},
+			configvariable: {
+				type: 'object',
+				properties: {
+					name: { $ref: '#/definitions/envVarName' },
+					default: { type: 'string' },
+					required: { type: 'boolean', default: true },
+				},
+				required: ['name'],
+				additionalProperties: false,
+			},
+		},
+		$schema: 'http://json-schema.org/draft-07/schema#',
+		$id: 'http://example.com/root.json',
+		type: 'object',
+		title: 'Component Manifest Schema',
+		required: ['componentId'],
+		additionalProperties: false,
+		properties: {
+			componentId: {
+				$id: '#/properties/componentId',
+				type: 'string',
+				title: 'The component id Schema',
+				pattern: '^(.*)$',
+			},
+			configurationTemplate: {
+				$id: '#/properties/configurationTemplate',
+				type: 'array',
+				title: 'The Configurationtemplate Schema',
+				items: {
+					$ref: '#/definitions/configvariable',
+				},
+			},
+		},
+	};
+
+	const result = await convert(schema);
+
+	expect(result).toMatchSnapshot();
+});

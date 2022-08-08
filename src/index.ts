@@ -6,8 +6,8 @@ import type {
 } from 'json-schema';
 import type { Options, SchemaType, SchemaTypeKeys } from './types';
 import { Walker } from 'json-schema-walker';
-import { allowedKeywords } from './const';
-import type { OpenAPI3 } from 'openapi-typescript';
+import { allowedKeywords } from './const.js';
+import type { OpenAPIV3 } from 'openapi-types';
 
 class InvalidTypeError extends Error {
 	constructor(message: string) {
@@ -31,16 +31,26 @@ const handleDefinition = async <T>(
 	if (type) {
 		// Walk just the definitions types
 		const walker = new Walker<T>();
-		await walker.loadSchema({ ...def, $schema: schema['$schema'] } as any, {
-			dereference: true,
-			cloneSchema: true,
-			dereferenceOptions: {
-				dereference: {
-					circular: 'ignore',
+		await walker.loadSchema(
+			{
+				definitions: schema['definitions'] || [],
+				...def,
+				$schema: schema['$schema'],
+			} as any,
+			{
+				dereference: true,
+				cloneSchema: true,
+				dereferenceOptions: {
+					dereference: {
+						circular: 'ignore',
+					},
 				},
-			},
-		});
+			}
+		);
 		await walker.walk(convertSchema, walker.vocabularies.DRAFT_07);
+		if ('definitions' in walker.rootSchema) {
+			delete (<any>walker.rootSchema).definitions;
+		}
 		return walker.rootSchema;
 	} else if (Array.isArray(def)) {
 		// if it's an array, we might want to reconstruct the type;
@@ -62,7 +72,7 @@ const handleDefinition = async <T>(
 const convert = async <T = JSONSchema>(
 	schema: T,
 	options?: Options
-): Promise<OpenAPI3> => {
+): Promise<OpenAPIV3.Document> => {
 	const walker = new Walker<T>();
 	const convertDefs = options?.convertUnreferencedDefinitions ?? true;
 	await walker.loadSchema(schema, options);
@@ -75,7 +85,7 @@ const convert = async <T = JSONSchema>(
 			rootSchema.definitions[defName] = await handleDefinition(def, schema);
 		}
 	}
-	return rootSchema as OpenAPI3;
+	return rootSchema as OpenAPIV3.Document;
 };
 
 function stripIllegalKeywords(schema: SchemaType) {
