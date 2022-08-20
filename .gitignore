@@ -2,7 +2,6 @@ build.sh
 .coveralls.yml
 .node-version
 .nyc_output
-yarn.lock
 resolved.yaml
 
 # Logs
