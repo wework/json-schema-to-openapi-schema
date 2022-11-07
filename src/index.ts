@@ -4,7 +4,7 @@ import type {
 	JSONSchema6Definition,
 	JSONSchema7Definition,
 } from 'json-schema';
-import type { Options, SchemaType, SchemaTypeKeys } from './types';
+import type { Options, SchemaType, SchemaTypeKeys } from './types.js';
 import { Walker } from 'json-schema-walker';
 import { allowedKeywords } from './const.js';
 import type { OpenAPIV3 } from 'openapi-types';
@@ -19,7 +19,7 @@ class InvalidTypeError extends Error {
 
 const oasExtensionPrefix = 'x-';
 
-const handleDefinition = async <T>(
+const handleDefinition = async <T extends JSONSchema = JSONSchema>(
 	def: JSONSchema7Definition | JSONSchema6Definition | JSONSchema4,
 	schema: T
 ) => {
@@ -69,7 +69,7 @@ const handleDefinition = async <T>(
 	return def;
 };
 
-const convert = async <T = JSONSchema>(
+const convert = async <T extends JSONSchema = JSONSchema>(
 	schema: T,
 	options?: Options
 ): Promise<OpenAPIV3.Document> => {
