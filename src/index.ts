@@ -19,7 +19,7 @@ class InvalidTypeError extends Error {
 
 const oasExtensionPrefix = 'x-';
 
-const handleDefinition = async <T extends JSONSchema = JSONSchema>(
+const handleDefinition = async <T extends JSONSchema4 = JSONSchema4>(
 	def: JSONSchema7Definition | JSONSchema6Definition | JSONSchema4,
 	schema: T
 ) => {
@@ -52,7 +52,8 @@ const handleDefinition = async <T extends JSONSchema = JSONSchema>(
 			delete (<any>walker.rootSchema).definitions;
 		}
 		return walker.rootSchema;
-	} else if (Array.isArray(def)) {
+	}
+	if (Array.isArray(def)) {
 		// if it's an array, we might want to reconstruct the type;
 		const typeArr = def;
 		const hasNull = typeArr.includes('null');
@@ -69,7 +70,7 @@ const handleDefinition = async <T extends JSONSchema = JSONSchema>(
 	return def;
 };
 
-const convert = async <T extends JSONSchema = JSONSchema>(
+const convert = async <T extends object = JSONSchema4>(
 	schema: T,
 	options?: Options
 ): Promise<OpenAPIV3.Document> => {
@@ -108,6 +109,7 @@ function convertSchema(schema: SchemaType | undefined) {
 	schema = convertTypes(schema);
 	schema = rewriteConst(schema);
 	schema = convertDependencies(schema);
+	schema = convertNullable(schema);
 	schema = rewriteIfThenElse(schema);
 	schema = rewriteExclusiveMinMax(schema);
 	schema = convertExamples(schema);
@@ -193,6 +195,30 @@ function convertDependencies(schema: SchemaType) {
 		};
 		schema.allOf.push(foo);
 	}
+	return schema;
+}
+
+function convertNullable(schema: SchemaType) {
+	for (const key of ['oneOf', 'anyOf'] as const) {
+		const schemas = schema[key] as JSONSchema4[];
+		if (!Array.isArray(schemas)) {
+			return schema;
+		}
+
+		const hasNullable = schemas.some((item) => item.type === 'null');
+
+		if (!hasNullable) {
+			return schema;
+		}
+
+		const filtered = schemas.filter((l) => l.type !== 'null');
+		for (const schemaEntry of filtered) {
+			schemaEntry.nullable = true;
+		}
+
+		schema[key] = filtered;
+	}
+
 	return schema;
 }
 
@@ -300,11 +326,11 @@ function rewriteIfThenElse(schema: SchemaType) {
 function rewriteExclusiveMinMax(schema: SchemaType) {
 	if (typeof schema.exclusiveMaximum === 'number') {
 		schema.maximum = schema.exclusiveMaximum;
-		schema.exclusiveMaximum = true;
+		(schema as JSONSchema4).exclusiveMaximum = true;
 	}
 	if (typeof schema.exclusiveMinimum === 'number') {
 		schema.minimum = schema.exclusiveMinimum;
-		schema.exclusiveMinimum = true;
+		(schema as JSONSchema4).exclusiveMinimum = true;
 	}
 	return schema;
 }

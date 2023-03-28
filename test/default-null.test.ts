@@ -8,8 +8,8 @@ it('supports default values of null', async ({ expect }) => {
 			nullableStringWithDefault: {
 				default: null,
 				oneOf: [{ type: 'string' }, { type: 'null' }],
-			}
-		}
+			},
+		},
 	};
 
 	const result = await convert(schema);
@@ -19,9 +19,9 @@ it('supports default values of null', async ({ expect }) => {
 		properties: {
 			nullableStringWithDefault: {
 				default: null,
-				oneOf: [{ type: 'string' }, { nullable: true }],
-			}
-		}
+				oneOf: [{ type: 'string', nullable: true }],
+			},
+		},
 	};
 
 	expect(result).toEqual(expected);
