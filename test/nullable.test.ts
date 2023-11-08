@@ -17,18 +17,22 @@ describe('nullable', () => {
 		});
 	});
 
-	it('supports nullables inside sub-schemas', async ({ expect }) => {
-		const schema = {
-			$schema: 'http://json-schema.org/draft-04/schema#',
-			oneOf: [{ type: 'string' }, { type: 'null' }],
-		} satisfies JSONSchema4;
+	it.each(['oneOf', 'anyOf'] as const)(
+		'supports nullables inside sub-schemas %s',
+		async (key) => {
+			const schema = {
+				$schema: 'http://json-schema.org/draft-04/schema#',
+				[key]: [{ type: 'string' }, { type: 'null' }],
+			} satisfies JSONSchema4;
 
-		const result = await convert(schema);
+			const result = await convert(schema);
 
-		expect(result).toEqual({
-			oneOf: [{ type: 'string', nullable: true }],
-		});
-	});
+			expect(result).toEqual({
+				[key]: [{ type: 'string', nullable: true }],
+			});
+		}
+	);
+
 	it('supports nullables inside definitions', async ({ expect }) => {
 		const schema = {
 			$schema: 'http://json-schema.org/draft-07/schema#',
@@ -149,59 +153,62 @@ describe('nullable', () => {
 		});
 	});
 
-	it('adds nullable for types with null', async ({ expect }) => {
-		const schema = {
-			$schema: 'http://json-schema.org/draft-04/schema#',
-			title: 'NullExample',
-			description: 'Null Example',
-			oneOf: [
-				{
-					type: 'object',
-					properties: {
-						foo: {
-							type: 'string',
+	it.each(['oneOf', 'anyOf'] as const)(
+		'adds nullable for types with null',
+		async (key) => {
+			const schema = {
+				$schema: 'http://json-schema.org/draft-04/schema#',
+				title: 'NullExample',
+				description: 'Null Example',
+				[key]: [
+					{
+						type: 'object',
+						properties: {
+							foo: {
+								type: 'string',
+							},
 						},
 					},
-				},
-				{
-					type: 'object',
-					properties: {
-						bar: {
-							type: 'number',
+					{
+						type: 'object',
+						properties: {
+							bar: {
+								type: 'number',
+							},
 						},
 					},
-				},
-				{
-					type: 'null',
-				},
-			],
-		} satisfies JSONSchema4;
+					{
+						type: 'null',
+					},
+				],
+			} satisfies JSONSchema4;
 
-		const result = await convert(schema);
+			const result = await convert(schema);
 
-		expect(result).toEqual({
-			title: 'NullExample',
-			description: 'Null Example',
-			oneOf: [
-				{
-					type: 'object',
-					properties: {
-						foo: {
-							type: 'string',
+			expect(result).toEqual({
+				title: 'NullExample',
+				description: 'Null Example',
+				[key]: [
+					{
+						type: 'object',
+						properties: {
+							foo: {
+								type: 'string',
+							},
 						},
+						nullable: true,
 					},
-					nullable: true,
-				},
-				{
-					type: 'object',
-					properties: {
-						bar: {
-							type: 'number',
+					{
+						type: 'object',
+						properties: {
+							bar: {
+								type: 'number',
+							},
 						},
+						nullable: true,
 					},
-					nullable: true,
-				},
-			],
-		});
-	});
+				],
+			});
+		}
+	);
 });

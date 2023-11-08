@@ -201,6 +201,8 @@ function convertDependencies(schema: SchemaType) {
 function convertNullable(schema: SchemaType) {
 	for (const key of ['oneOf', 'anyOf'] as const) {
 		const schemas = schema[key] as JSONSchema4[];
+		if (!schemas) continue;
+
 		if (!Array.isArray(schemas)) {
 			return schema;
 		}
