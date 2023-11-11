@@ -30,7 +30,7 @@ describe('nullable', () => {
 			expect(result).toEqual({
 				[key]: [{ type: 'string', nullable: true }],
 			});
-		}
+		},
 	);
 
 	it('supports nullables inside definitions', async ({ expect }) => {
@@ -209,6 +209,6 @@ describe('nullable', () => {
 					},
 				],
 			});
-		}
+		},
 	);
 });

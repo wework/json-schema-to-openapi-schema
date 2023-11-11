@@ -9,6 +9,6 @@ export default defineConfig({
 		reporters: 'verbose',
 	},
 	esbuild: {
-		target: 'node10',
+		target: 'node21',
 	},
 });

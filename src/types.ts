@@ -1,5 +1,5 @@
-import type { JSONSchema } from '@apidevtools/json-schema-ref-parser';
-import type $RefParser from '@apidevtools/json-schema-ref-parser';
+import type { JSONSchema } from '@apidevtools/json-schema-ref-parser/dist/lib/types';
+import type { ParserOptions } from '@apidevtools/json-schema-ref-parser/dist/lib/options';
 
 export type addPrefixToObject = {
 	[K in keyof JSONSchema as `x-${K}`]: JSONSchema[K];
@@ -9,7 +9,7 @@ export interface Options {
 	cloneSchema?: boolean;
 	dereference?: boolean;
 	convertUnreferencedDefinitions?: boolean;
-	dereferenceOptions?: $RefParser.Options;
+	dereferenceOptions?: ParserOptions | undefined;
 }
 type ExtendedJSONSchema = addPrefixToObject & JSONSchema;
 export type SchemaType = ExtendedJSONSchema & {

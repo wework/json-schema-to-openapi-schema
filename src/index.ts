@@ -1,13 +1,13 @@
-import type { JSONSchema } from '@apidevtools/json-schema-ref-parser';
 import type {
 	JSONSchema4,
 	JSONSchema6Definition,
 	JSONSchema7Definition,
 } from 'json-schema';
-import type { Options, SchemaType, SchemaTypeKeys } from './types.js';
+import type { Options, SchemaType, SchemaTypeKeys } from './types';
 import { Walker } from 'json-schema-walker';
-import { allowedKeywords } from './const.js';
+import { allowedKeywords } from './const';
 import type { OpenAPIV3 } from 'openapi-types';
+import type { JSONSchema } from '@apidevtools/json-schema-ref-parser/dist/lib/types';
 
 class InvalidTypeError extends Error {
 	constructor(message: string) {
@@ -21,7 +21,7 @@ const oasExtensionPrefix = 'x-';
 
 const handleDefinition = async <T extends JSONSchema4 = JSONSchema4>(
 	def: JSONSchema7Definition | JSONSchema6Definition | JSONSchema4,
-	schema: T
+	schema: T,
 ) => {
 	if (typeof def !== 'object') {
 		return def;
@@ -45,7 +45,7 @@ const handleDefinition = async <T extends JSONSchema4 = JSONSchema4>(
 						circular: 'ignore',
 					},
 				},
-			}
+			},
 		);
 		await walker.walk(convertSchema, walker.vocabularies.DRAFT_07);
 		if ('definitions' in walker.rootSchema) {
@@ -72,7 +72,7 @@ const handleDefinition = async <T extends JSONSchema4 = JSONSchema4>(
 
 const convert = async <T extends object = JSONSchema4>(
 	schema: T,
-	options?: Options
+	options?: Options,
 ): Promise<OpenAPIV3.Document> => {
 	const walker = new Walker<T>();
 	const convertDefs = options?.convertUnreferencedDefinitions ?? true;
@@ -271,7 +271,7 @@ function convertIllegalKeywordsAsExtensions(schema: SchemaType) {
 		.filter(
 			(keyword) =>
 				!keyword.startsWith(oasExtensionPrefix) &&
-				!allowedKeywords.includes(keyword)
+				!allowedKeywords.includes(keyword),
 		)
 		.forEach((keyword: SchemaTypeKeys) => {
 			const key = `${oasExtensionPrefix}${keyword}` as keyof SchemaType;

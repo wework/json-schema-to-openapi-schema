@@ -192,7 +192,8 @@ it('dereferencing schema with deference option at root', async ({ expect }) => {
 	expect(result).toEqual(expected);
 });
 
-it('dereferencing schema with remote http and https references', async ({
+// skip until nock supports native fetch https://github.com/nock/nock/issues/2397
+it.skip('dereferencing schema with remote http and https references', async ({
 	expect,
 }) => {
 	nock('http://foo.bar/')

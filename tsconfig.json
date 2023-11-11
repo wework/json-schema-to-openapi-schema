@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
-		"module": "esnext",
-		"outDir": "dist/mjs",
+		"module": "commonjs",
+		"outDir": "dist",
 		"target": "es2020",
 		"allowJs": true,
 		"allowSyntheticDefaultImports": true,
@@ -12,7 +12,7 @@
 		"lib": ["esnext"],
 		"listEmittedFiles": false,
 		"listFiles": false,
-		"moduleResolution": "node16",
+		"moduleResolution": "Node",
 		"noFallthroughCasesInSwitch": true,
 		"pretty": true,
 		"resolveJsonModule": true,
