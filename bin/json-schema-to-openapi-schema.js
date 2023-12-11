@@ -2,7 +2,7 @@
 'use strict';
 
 const yargs = require('yargs');
-const converter = require('../dist/cjs/index.js').default;
+const converter = require('../dist/index.js').default;
 const helpText = require('./help-text.json');
 const fs = require('fs');
 const readFileAsync = require('util').promisify(fs.readFile);
